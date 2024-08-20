@@ -1,37 +1,129 @@
-import { Tabs } from 'expo-router';
+import { View } from 'react-native';
 import React from 'react';
+import { Tabs } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import {BlurView} from '@react-native-community/blur'
+import Colors from '@/constants/Colors';
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+const _layout = () => {
   return (
-    <Tabs
+    <Tabs 
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-      }}>
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          position: 'absolute',
+          height: 50,
+          bottom: 10,
+          paddingHorizontal: 10,
+          left: 16,
+          right: 16,
+          elevation: 0,
+          backgroundColor: "#333333", // Set the background color of the tab bar
+          borderRadius: 20,
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1,
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                alignItems: 'center',
+              }}
+            >
+              <Ionicons
+                name={focused ? 'home' : 'home-outline'}
+                color={focused ? 'white' : 'gray'} // Active icon is white, inactive is gray
+                size={24}
+                style={focused ? { textShadowColor: 'white', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 4 } : {}}
+              />
+            </View>
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="booking"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                alignItems: 'center',
+              }}
+            >
+              <Ionicons
+                name={focused ? 'calendar' : 'calendar-outline'}
+                color={focused ? 'white' : 'gray'} // Active icon is white, inactive is gray
+                size={24}
+                style={focused ? { textShadowColor: 'white', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 4 } : {}}
+              />
+            </View>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="chatbot"
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                alignItems: 'center',
+              }}
+            >
+              <Ionicons
+                name={focused ? 'chatbubble' : 'chatbubble-outline'}
+                color={focused ? 'white' : 'gray'} // Active icon is white, inactive is gray
+                size={24}
+                style={focused ? { textShadowColor: 'white', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 4 } : {}}
+              />
+            </View>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="bookmark"
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                alignItems: 'center',
+              }}
+            >
+              <Ionicons
+                name={focused ? 'bookmark' : 'bookmark-outline'}
+                color={focused ? 'white' : 'gray'} // Active icon is white, inactive is gray
+                size={24}
+                style={focused ? { textShadowColor: 'white', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 4 } : {}}
+              />
+            </View>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                alignItems: 'center',
+              }}
+            >
+              <Ionicons
+                name={focused ? 'person' : 'person-outline'}
+                color={focused ? 'white' : 'gray'} // Active icon is white, inactive is gray
+                size={24}
+                style={focused ? { textShadowColor: 'white', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 4 } : {}}
+              />
+            </View>
           ),
         }}
       />
     </Tabs>
   );
-}
+};
+
+export default _layout;
