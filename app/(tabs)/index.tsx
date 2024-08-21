@@ -4,6 +4,7 @@ import {
   View,
   Animated,
   StatusBar,
+  ScrollView,
   TextInput,
   ImageBackground,
   Text,
@@ -76,8 +77,9 @@ export default function Page() {
   });
 
   return (
-    <View style={{ backgroundColor: Color.bgColor, flex: 1 }}>
-      <StatusBar barStyle="light-content" />
+   <ScrollView style={{ backgroundColor: Color.bgColor, flex: 1 }}>
+    <StatusBar barStyle="dark-content" />
+    
       <Animated.View
         style={[
           styles.header,
@@ -155,7 +157,8 @@ export default function Page() {
       </Animated.ScrollView>
 
       <View style={styles.bottomSpacer} />
-    </View>
+      
+    </ScrollView>
   );
 }
 
