@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -17,7 +17,6 @@ import Color from '@/constants/Colors';
 import VideoCarousel from '@/components/VideoCarousel';
 import CategoryButtons from "@/components/CategoryButton";
 import Listings from "@/components/Listings";
-import listingData from "@/data/destinations.json";
 import TextAnimator from "@/TypingAnimations/TextAnimator";
 
 const { height } = Dimensions.get('window');
@@ -34,11 +33,34 @@ export default function Page() {
     { $id: '3', video: require('@/assets/videos/video-3.mp4'), title: "Continental Hotel", content: "Available everywhere around the globe"},
     { $id: '4', video: require('@/assets/videos/video-4.mp4'), title: "Your best partner", content: "No 1 Hotel chosen by businessman"}
   ];
-   
+
   const [category, setCategory] = useState("All");
+  const [destinations, setDestinations] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('http://10.0.2.2:5000/destinations')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Data fetched successfully:', data);
+        setDestinations(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching data:', err);
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
 
   const onCatChanged = (category: string) => {
-    console.log("Categpry: ", category);
+    console.log("Category: ", category);
     setCategory(category);
   }
 
@@ -77,8 +99,8 @@ export default function Page() {
   });
 
   return (
-   <View style={{ backgroundColor: Color.bgColor, flex: 1 }}>
-    <StatusBar barStyle="dark-content" />
+    <View style={{ backgroundColor: Color.bgColor, flex: 1 }}>
+      <StatusBar barStyle="dark-content" />
       <Animated.View
         style={[
           styles.header,
@@ -145,18 +167,12 @@ export default function Page() {
         )}
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
-
       >
-       <VideoCarousel posts={videos} />
-
-       <CategoryButtons onCagtegoryChanged={onCatChanged} />
-
-       <Listings listings={listingData} category={category} />
-
+        <VideoCarousel posts={videos} />
+        <CategoryButtons onCagtegoryChanged={onCatChanged} />
+        <Listings listings={destinations} category={category} />
       </Animated.ScrollView>
-
       <View style={styles.bottomSpacer} />
-      
     </View>
   );
 }

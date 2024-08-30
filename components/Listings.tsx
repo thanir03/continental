@@ -6,8 +6,8 @@ import {
   View,
   Pressable,
   Image,
+  Dimensions,
   Animated,
-  Dimensions
 } from 'react-native';
 import { ListingType } from '@/types/listingType';
 import Colors from '@/constants/Colors';
@@ -24,12 +24,16 @@ const { width } = Dimensions.get('screen');
 const Listings = ({ listings, category }: Props) => {
   const [loading, setLoading] = useState(false);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
-  const flipAnimations = useRef(
-    listings.reduce((acc, item) => {
-      acc[item.id] = new Animated.Value(0);
-      return acc;
-    }, {} as Record<string, Animated.Value>)
-  ).current;
+
+  // Using a ref to store Animated.Values for each listing
+  const flipAnimations = useRef<{ [key: string]: Animated.Value }>({}).current;
+
+  // Initialize the animation for a given id if it doesn't exist
+  const initializeAnimation = (id: string) => {
+    if (!flipAnimations[id]) {
+      flipAnimations[id] = new Animated.Value(0);
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -41,29 +45,36 @@ const Listings = ({ listings, category }: Props) => {
   }, [category]);
 
   const handleLongPress = (id: string) => {
-    setExpandedItem(id);
+    initializeAnimation(id);
+    const animationValue = flipAnimations[id];
 
-    Animated.spring(flipAnimations[id], {
-      toValue: 180,
-      friction: 8,
-      tension: 10,
-      useNativeDriver: true,
-    }).start();
+    if (animationValue) {
+      setExpandedItem(id);
+      Animated.spring(animationValue, {
+        toValue: 180,
+        friction: 8,
+        tension: 10,
+        useNativeDriver: true,
+      }).start();
+    }
   };
 
   const handlePressOut = (id: string) => {
-    setExpandedItem(null);
+    const animationValue = flipAnimations[id];
 
-    Animated.spring(flipAnimations[id], {
-      toValue: 0,
-      friction: 8,
-      tension: 10,
-      useNativeDriver: true,
-    }).start();
+    if (animationValue) {
+      setExpandedItem(null);
+      Animated.spring(animationValue, {
+        toValue: 0,
+        friction: 8,
+        tension: 10,
+        useNativeDriver: true,
+      }).start();
+    }
   };
 
   const renderItem = ({ item }: { item: ListingType }) => {
-    const flipAnimation = flipAnimations[item.id];
+    const flipAnimation = flipAnimations[item.id] || new Animated.Value(0);
 
     const frontInterpolate = flipAnimation.interpolate({
       inputRange: [0, 180],
@@ -111,13 +122,15 @@ const Listings = ({ listings, category }: Props) => {
               </View>
             </Animated.View>
 
-            <Animated.View style={[styles.card, styles.cardBack, flipToBackStyle]}>
-              <Image source={{ uri: item.image }} style={[styles.image, styles.flippedImage]} />
-              <View style={styles.backContent}>
-                <Text style={styles.backTitle}>{item.name}</Text>
-                <Text style={styles.backDescription}>{item.description}</Text>
-              </View>
-            </Animated.View>
+            {expandedItem === item.id && (
+              <Animated.View style={[styles.card, styles.cardBack, flipToBackStyle]}>
+                <Image source={{ uri: item.image }} style={[styles.image, styles.flippedImage]} />
+                <View style={styles.backContent}>
+                  <Text style={styles.backTitle}>{item.name}</Text>
+                  <Text style={styles.backDescription}>{item.description}</Text>
+                </View>
+              </Animated.View>
+            )}
           </View>
         </Pressable>
       </Link>
@@ -150,7 +163,7 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 10,
     position: 'absolute',
-    backfaceVisibility: 'hidden',
+    backfaceVisibility: 'hidden', // Prevent flicker during rotation
   },
   imageContainer: {
     position: 'relative',
