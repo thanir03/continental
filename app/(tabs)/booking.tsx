@@ -1,12 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { Text } from "react-native";
+import React from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function booking() {
   return (
-    <View>
+    <SafeAreaView>
       <Text>booking</Text>
-    </View>
-  )
+    </SafeAreaView>
+  );
 }
-
-const styles = StyleSheet.create({})

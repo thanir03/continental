@@ -1,45 +1,63 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from "react";
 import {
   StyleSheet,
   View,
   Animated,
-  StatusBar,
   TextInput,
   ImageBackground,
-  Text,
   Dimensions,
   TouchableOpacity,
-  Image,
-} from 'react-native';
-import { Feather, Ionicons } from '@expo/vector-icons';
-import Color from '@/constants/Colors';
-import VideoCarousel from '@/components/VideoCarousel';
+} from "react-native";
+import { Feather, Ionicons } from "@expo/vector-icons";
+import Color from "@/constants/Colors";
+import VideoCarousel from "@/components/VideoCarousel";
 import CategoryButtons from "@/components/CategoryButton";
 import Listings from "@/components/Listings";
 import listingData from "@/data/destinations.json";
 import TextAnimator from "@/TypingAnimations/TextAnimator";
+import { SheetManager } from "react-native-actions-sheet";
 
-const { height } = Dimensions.get('window');
+const { height } = Dimensions.get("window");
 
 const Colors = {
-  white: '#ffffff',
-  black: '#000000',
+  white: "#ffffff",
+  black: "#000000",
 };
 
-export default function Page() {
+export default function HomePage() {
   const videos = [
-    { $id: '1', video: require('@/assets/videos/video-1.mp4'), title: "Adventure awaits you", content: "Variaty of plans awaits you"},
-    { $id: '2', video: require('@/assets/videos/video-2.mp4'), title: "Clear your mind", content: "Services available 24 hours"},
-    { $id: '3', video: require('@/assets/videos/video-3.mp4'), title: "Continental Hotel", content: "Available everywhere around the globe"},
-    { $id: '4', video: require('@/assets/videos/video-4.mp4'), title: "Your best partner", content: "No 1 Hotel chosen by businessman"}
+    {
+      $id: "1",
+      video: require("@/assets/videos/video-1.mp4"),
+      title: "Adventure awaits you",
+      content: "Variaty of plans awaits you",
+    },
+    {
+      $id: "2",
+      video: require("@/assets/videos/video-2.mp4"),
+      title: "Clear your mind",
+      content: "Services available 24 hours",
+    },
+    {
+      $id: "3",
+      video: require("@/assets/videos/video-3.mp4"),
+      title: "Continental Hotel",
+      content: "Available everywhere around the globe",
+    },
+    {
+      $id: "4",
+      video: require("@/assets/videos/video-4.mp4"),
+      title: "Your best partner",
+      content: "No 1 Hotel chosen by businessman",
+    },
   ];
-   
+
   const [category, setCategory] = useState("All");
 
   const onCatChanged = (category: string) => {
     console.log("Categpry: ", category);
     setCategory(category);
-  }
+  };
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -52,48 +70,52 @@ export default function Page() {
   const translateHeader = scrollY.interpolate({
     inputRange: [0, 0.8 * (headerHeight - minHeaderHeight)],
     outputRange: [0, -0.98 * (headerHeight - minHeaderHeight)], // Reduce the translation amount
-    extrapolate: 'clamp',
+    extrapolate: "clamp",
   });
 
   // Interpolate the scale of the content based on scroll position
   const scaleContent = scrollY.interpolate({
-    inputRange: [0, 0.80 * (headerHeight - minHeaderHeight)],
+    inputRange: [0, 0.8 * (headerHeight - minHeaderHeight)],
     outputRange: [1.0, 0.98], // Slightly reduce the scale down amount
-    extrapolate: 'clamp',
+    extrapolate: "clamp",
   });
 
   // Calculate translateY for the text and search bar to stop at fixedPosition
   const translateYTextInput = scrollY.interpolate({
     inputRange: [0, fixedPosition],
-    outputRange: [0, 0.55*(headerHeight - minHeaderHeight)], // Reduce the translation amount
-    extrapolate: 'clamp',
+    outputRange: [0, 0.55 * (headerHeight - minHeaderHeight)], // Reduce the translation amount
+    extrapolate: "clamp",
   });
 
   const translateYButton = scrollY.interpolate({
     inputRange: [0, fixedPosition],
-    outputRange: [0, 0.95*(headerHeight - minHeaderHeight)], // Reduce the translation amount
-    extrapolate: 'clamp',
+    outputRange: [0, 0.95 * (headerHeight - minHeaderHeight)], // Reduce the translation amount
+    extrapolate: "clamp",
   });
 
   return (
     <View style={{ backgroundColor: Color.bgColor, flex: 1 }}>
-      <StatusBar barStyle="light-content" />
       <Animated.View
         style={[
           styles.header,
-          { height: headerHeight, transform: [{ translateY: translateHeader }] },
+          {
+            height: headerHeight,
+            transform: [{ translateY: translateHeader }],
+          },
         ]}
       >
         <ImageBackground
-          source={require('@/assets/images/Wallpaper.jpg')}
+          source={require("@/assets/images/Wallpaper.jpg")}
           style={[styles.headerBackground, { borderRadius: 50 }]}
           imageStyle={styles.headerImage}
         >
           <Animated.View style={styles.headerTopBar}>
             <TouchableOpacity
-              onPress={() => {}}
+              onPress={() => {
+                SheetManager.show("auth");
+              }}
               style={{
-                position: 'absolute',
+                position: "absolute",
                 right: 5,
                 top: 30,
                 backgroundColor: "transparent",
@@ -103,26 +125,35 @@ export default function Page() {
                 shadowOffset: { width: 2, height: 4 },
                 shadowOpacity: 0.2,
                 shadowRadius: 3,
-                transform: [{ scale: scaleContent }, { translateY: translateYButton }],
+                transform: [
+                  { scale: scaleContent },
+                  { translateY: translateYButton },
+                ],
               }}
             >
-              <Ionicons name="notifications-outline" size={30} color={Colors.white} />
+              <Ionicons
+                name="notifications-outline"
+                size={30}
+                color={Colors.white}
+              />
             </TouchableOpacity>
           </Animated.View>
           <Animated.View
             style={[
               styles.headerContent,
               {
-                transform: [{ scale: scaleContent }, { translateY: translateYTextInput }],
+                transform: [
+                  { scale: scaleContent },
+                  { translateY: translateYTextInput },
+                ],
               },
             ]}
           >
+            <TextAnimator
+              content="Hello, tell us where to go?"
+              textStyle={styles.headerTitle}
+            />
 
-          <TextAnimator
-             content = "Hello, tell us where to go?"
-             textStyle={styles.headerTitle}
-          />
-            
             <View style={styles.inputWrapper}>
               <TextInput
                 placeholder="Where are you going?"
@@ -144,14 +175,13 @@ export default function Page() {
         )}
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
-
       >
-       <VideoCarousel posts={videos} />
+        <VideoCarousel posts={videos} />
 
-       <CategoryButtons onCagtegoryChanged={onCatChanged} />
+        {/* Change to city buttons  */}
+        <CategoryButtons onCagtegoryChanged={onCatChanged} />
 
-       <Listings listings={listingData} category={category} />
-
+        <Listings listings={listingData} category={category} />
       </Animated.ScrollView>
 
       <View style={styles.bottomSpacer} />
@@ -164,37 +194,37 @@ const styles = StyleSheet.create({
   content: {
     padding: 24,
     paddingTop: height * 0.8, // Adjust padding to account for the initial header height
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   header: {
-    position: 'absolute',
-    width: '100%',
+    position: "absolute",
+    width: "100%",
     zIndex: 1,
   },
   headerBackground: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'flex-start', // Align items to the left
+    justifyContent: "center",
+    alignItems: "flex-start", // Align items to the left
     paddingLeft: 10, // Add some padding to the left if needed
     paddingRight: 10, // Add some padding to the left if needed
   },
   headerImage: {
-    resizeMode: 'cover',
+    resizeMode: "cover",
   },
   headerTitle: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 26,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     paddingBottom: 5,
   },
 
   inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 13, // Add margin to push the input down a bit
   },
   input: {
-    backgroundColor: 'rgba(255,255,255,0.5)',
+    backgroundColor: "rgba(255,255,255,0.5)",
     borderRadius: 100,
     borderColor: Colors.white,
     height: 48,
@@ -203,28 +233,28 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   inputIcon: {
-    position: 'absolute',
+    position: "absolute",
     right: 16,
   },
   headerContent: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
     paddingHorizontal: 24,
     paddingVertical: 16,
   },
   headerTopBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    position: 'absolute',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    position: "absolute",
     top: 0,
-    width: '100%',
+    width: "100%",
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
   bottomSpacer: {
     height: 80,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
 });

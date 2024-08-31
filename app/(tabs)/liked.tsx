@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-export default function bookmark() {
+export default function liked() {
   return (
     <View>
-      <Text>bookmark</Text>
+      <Text>liked</Text>
     </View>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -7,19 +7,19 @@ import {
   Pressable,
   Image,
   Animated,
-  Dimensions
-} from 'react-native';
-import { ListingType } from '@/types/listingType';
-import Colors from '@/constants/Colors';
-import { FontAwesome5, Ionicons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+  Dimensions,
+} from "react-native";
+import { ListingType } from "@/types/listingType";
+import Colors from "@/constants/Colors";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { Link } from "expo-router";
 
 type Props = {
   listings: ListingType[];
   category: string;
 };
 
-const { width } = Dimensions.get('screen');
+const { width } = Dimensions.get("screen");
 
 const Listings = ({ listings, category }: Props) => {
   const [loading, setLoading] = useState(false);
@@ -67,12 +67,12 @@ const Listings = ({ listings, category }: Props) => {
 
     const frontInterpolate = flipAnimation.interpolate({
       inputRange: [0, 180],
-      outputRange: ['0deg', '180deg'],
+      outputRange: ["0deg", "180deg"],
     });
 
     const backInterpolate = flipAnimation.interpolate({
       inputRange: [0, 180],
-      outputRange: ['180deg', '360deg'],
+      outputRange: ["180deg", "360deg"],
     });
 
     const flipToFrontStyle = {
@@ -84,7 +84,7 @@ const Listings = ({ listings, category }: Props) => {
     };
 
     return (
-      <Link href={`/listing/${item.id}`} asChild>
+      <Link href={`/hotel/${item.id}`} asChild>
         <Pressable
           onLongPress={() => handleLongPress(item.id)}
           onPressOut={() => handlePressOut(item.id)}
@@ -97,22 +97,43 @@ const Listings = ({ listings, category }: Props) => {
                   <Text style={styles.itemTxt} numberOfLines={1}>
                     {item.name}
                   </Text>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
                     <View style={styles.locationContainer}>
-                      <FontAwesome5 name="map-marker-alt" size={18} color={Colors.primaryColor} />
-                      <Text style={styles.itemLocationTxt}>{item.location}</Text>
+                      <FontAwesome5
+                        name="map-marker-alt"
+                        size={18}
+                        color={Colors.primaryColor}
+                      />
+                      <Text style={styles.itemLocationTxt}>
+                        {item.location}
+                      </Text>
                     </View>
                     <Text style={styles.itemPriceTxt}>${item.price}</Text>
                   </View>
                 </View>
                 <View style={styles.bookmark}>
-                  <Ionicons name="bookmark-outline" size={20} color={Colors.white} />
+                  <Ionicons
+                    name="bookmark-outline"
+                    size={20}
+                    color={Colors.white}
+                  />
                 </View>
               </View>
             </Animated.View>
 
-            <Animated.View style={[styles.card, styles.cardBack, flipToBackStyle]}>
-              <Image source={{ uri: item.image }} style={[styles.image, styles.flippedImage]} />
+            <Animated.View
+              style={[styles.card, styles.cardBack, flipToBackStyle]}
+            >
+              <Image
+                source={{ uri: item.image }}
+                style={[styles.image, styles.flippedImage]}
+              />
               <View style={styles.backContent}>
                 <Text style={styles.backTitle}>{item.name}</Text>
                 <Text style={styles.backDescription}>{item.description}</Text>
@@ -143,39 +164,39 @@ const styles = StyleSheet.create({
     width: width / 2,
     height: 230,
     marginRight: 20,
-    position: 'relative',
+    position: "relative",
   },
   card: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     borderRadius: 10,
-    position: 'absolute',
-    backfaceVisibility: 'hidden',
+    position: "absolute",
+    backfaceVisibility: "hidden",
   },
   imageContainer: {
-    position: 'relative',
-    width: '100%',
-    height: '100%',
+    position: "relative",
+    width: "100%",
+    height: "100%",
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     borderRadius: 10,
   },
   titleBox: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     padding: 5,
     paddingLeft: 5,
     paddingRight: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
   },
   bookmark: {
-    position: 'absolute',
+    position: "absolute",
     top: 10,
     right: 10,
     backgroundColor: Colors.primaryColor,
@@ -184,12 +205,12 @@ const styles = StyleSheet.create({
   },
   itemTxt: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.white,
   },
   locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginVertical: 5,
   },
   itemLocationTxt: {
@@ -199,32 +220,32 @@ const styles = StyleSheet.create({
   },
   itemPriceTxt: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.white,
   },
   cardBack: {
-    backgroundColor: '#5C8374',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#5C8374",
+    justifyContent: "center",
+    alignItems: "center",
   },
   flippedImage: {
     opacity: 0.2,
   },
   backContent: {
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
   },
   backTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: "700",
     color: Colors.white,
     marginBottom: 10,
   },
   backDescription: {
     fontSize: 14,
     color: Colors.white,
-    textAlign: 'center',
+    textAlign: "center",
     paddingHorizontal: 10,
   },
 });

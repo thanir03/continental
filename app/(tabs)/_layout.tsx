@@ -1,18 +1,16 @@
-import { View } from 'react-native';
-import React from 'react';
-import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import {BlurView} from '@react-native-community/blur'
-import Colors from '@/constants/Colors';
+import { View } from "react-native";
+import React from "react";
+import { Tabs } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
 const _layout = () => {
   return (
-    <Tabs 
+    <Tabs
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          position: 'absolute',
+          position: "absolute",
           height: 50,
           bottom: 10,
           paddingHorizontal: 10,
@@ -21,8 +19,8 @@ const _layout = () => {
           elevation: 0,
           backgroundColor: "#333333", // Set the background color of the tab bar
           borderRadius: 20,
-          alignItems: 'center',
-          justifyContent: 'center',
+          alignItems: "center",
+          justifyContent: "center",
           zIndex: 1,
         },
       }}
@@ -33,14 +31,22 @@ const _layout = () => {
           tabBarIcon: ({ focused }) => (
             <View
               style={{
-                alignItems: 'center',
+                alignItems: "center",
               }}
             >
               <Ionicons
-                name={focused ? 'home' : 'home-outline'}
-                color={focused ? 'white' : 'gray'} // Active icon is white, inactive is gray
+                name={focused ? "home" : "home-outline"}
+                color={focused ? "white" : "gray"} // Active icon is white, inactive is gray
                 size={24}
-                style={focused ? { textShadowColor: 'white', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 4 } : {}}
+                style={
+                  focused
+                    ? {
+                        textShadowColor: "white",
+                        textShadowOffset: { width: 0, height: 0 },
+                        textShadowRadius: 4,
+                      }
+                    : {}
+                }
               />
             </View>
           ),
@@ -52,14 +58,22 @@ const _layout = () => {
           tabBarIcon: ({ focused }) => (
             <View
               style={{
-                alignItems: 'center',
+                alignItems: "center",
               }}
             >
               <Ionicons
-                name={focused ? 'calendar' : 'calendar-outline'}
-                color={focused ? 'white' : 'gray'} // Active icon is white, inactive is gray
+                name={focused ? "calendar" : "calendar-outline"}
+                color={focused ? "white" : "gray"} // Active icon is white, inactive is gray
                 size={24}
-                style={focused ? { textShadowColor: 'white', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 4 } : {}}
+                style={
+                  focused
+                    ? {
+                        textShadowColor: "white",
+                        textShadowOffset: { width: 0, height: 0 },
+                        textShadowRadius: 4,
+                      }
+                    : {}
+                }
               />
             </View>
           ),
@@ -71,33 +85,49 @@ const _layout = () => {
           tabBarIcon: ({ focused }) => (
             <View
               style={{
-                alignItems: 'center',
+                alignItems: "center",
               }}
             >
               <Ionicons
-                name={focused ? 'chatbubble' : 'chatbubble-outline'}
-                color={focused ? 'white' : 'gray'} // Active icon is white, inactive is gray
+                name={focused ? "chatbubble" : "chatbubble-outline"}
+                color={focused ? "white" : "gray"} // Active icon is white, inactive is gray
                 size={24}
-                style={focused ? { textShadowColor: 'white', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 4 } : {}}
+                style={
+                  focused
+                    ? {
+                        textShadowColor: "white",
+                        textShadowOffset: { width: 0, height: 0 },
+                        textShadowRadius: 4,
+                      }
+                    : {}
+                }
               />
             </View>
           ),
         }}
       />
       <Tabs.Screen
-        name="bookmark"
+        name="liked"
         options={{
           tabBarIcon: ({ focused }) => (
             <View
               style={{
-                alignItems: 'center',
+                alignItems: "center",
               }}
             >
               <Ionicons
-                name={focused ? 'bookmark' : 'bookmark-outline'}
-                color={focused ? 'white' : 'gray'} // Active icon is white, inactive is gray
+                name={focused ? "bookmark" : "bookmark-outline"}
+                color={focused ? "white" : "gray"} // Active icon is white, inactive is gray
                 size={24}
-                style={focused ? { textShadowColor: 'white', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 4 } : {}}
+                style={
+                  focused
+                    ? {
+                        textShadowColor: "white",
+                        textShadowOffset: { width: 0, height: 0 },
+                        textShadowRadius: 4,
+                      }
+                    : {}
+                }
               />
             </View>
           ),
@@ -109,14 +139,22 @@ const _layout = () => {
           tabBarIcon: ({ focused }) => (
             <View
               style={{
-                alignItems: 'center',
+                alignItems: "center",
               }}
             >
               <Ionicons
-                name={focused ? 'person' : 'person-outline'}
-                color={focused ? 'white' : 'gray'} // Active icon is white, inactive is gray
+                name={focused ? "person" : "person-outline"}
+                color={focused ? "white" : "gray"} // Active icon is white, inactive is gray
                 size={24}
-                style={focused ? { textShadowColor: 'white', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 4 } : {}}
+                style={
+                  focused
+                    ? {
+                        textShadowColor: "white",
+                        textShadowOffset: { width: 0, height: 0 },
+                        textShadowRadius: 4,
+                      }
+                    : {}
+                }
               />
             </View>
           ),
@@ -125,6 +163,5 @@ const _layout = () => {
     </Tabs>
   );
 };
-
 
 export default _layout;

@@ -5,26 +5,25 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import Colors from "@/constants/Colors";
 import destinationCategories from "@/data/categories";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import GSAPToTextAnimator from '@/TypingAnimations/GsapToAnimation';
-
+import GSAPToTextAnimator from "@/TypingAnimations/GsapToAnimation";
 
 type Props = {
   onCagtegoryChanged: (category: string) => void;
-}
+};
 
-const CategoryButtons = ({onCagtegoryChanged}: Props) => {
+const CategoryButtons = ({ onCagtegoryChanged }: Props) => {
   const scrollRef = useRef<ScrollView>(null);
-  const itemRef = useRef<TouchableOpacity[] | null[]>([]);
+  const itemRef = useRef<TouchableOpacity[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const handleSelectCategory = (index: number) => {
     const selected = itemRef.current[index];
     setActiveIndex(index);
-
+    if (!scrollRef.current) return;
     selected?.measureLayout(
       scrollRef.current, // Measures relative to the ScrollView
       (x, y) => {
@@ -38,11 +37,7 @@ const CategoryButtons = ({onCagtegoryChanged}: Props) => {
 
   return (
     <View>
-
-      <GSAPToTextAnimator
-        content="Categories"
-        textStyle={styles.title}
-      />
+      <GSAPToTextAnimator content="Categories" textStyle={styles.title} />
       <ScrollView
         ref={scrollRef}
         horizontal
@@ -56,7 +51,9 @@ const CategoryButtons = ({onCagtegoryChanged}: Props) => {
         {destinationCategories.map((item, index) => (
           <TouchableOpacity
             key={index}
-            ref={(el) => itemRef.current[index] = el}
+            ref={(el) => {
+              if (itemRef.current && el) itemRef.current[index] = el;
+            }}
             onPress={() => handleSelectCategory(index)}
             style={
               activeIndex === index
