@@ -18,6 +18,8 @@ import VideoCarousel from '@/components/VideoCarousel';
 import CategoryButtons from "@/components/CategoryButton";
 import Listings from "@/components/Listings";
 import TextAnimator from "@/TypingAnimations/TextAnimator";
+import PopularCarousel from '@/components/ParallaxCarousel';
+import CitiesCarousel from '@/components/CitiesCarousel';
 
 const { height } = Dimensions.get('window');
 
@@ -48,7 +50,7 @@ export default function Page() {
         return response.json();
       })
       .then(data => {
-        console.log('Data fetched successfully:', data);
+        console.log('Destination Data fetched successfully:', data);
         setDestinations(data);
         setLoading(false);
       })
@@ -165,12 +167,14 @@ export default function Page() {
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: true }
         )}
-        scrollEventThrottle={16}
+        scrollEventThrottle={20}
         keyboardShouldPersistTaps="handled"
       >
         <VideoCarousel posts={videos} />
+        <PopularCarousel/>
         <CategoryButtons onCagtegoryChanged={onCatChanged} />
         <Listings listings={destinations} category={category} />
+        <CitiesCarousel/>
       </Animated.ScrollView>
       <View style={styles.bottomSpacer} />
     </View>
@@ -198,6 +202,7 @@ const styles = StyleSheet.create({
   },
   headerImage: {
     resizeMode: 'cover',
+    borderRadius: 20,
   },
   headerTitle: {
     color: '#fff',

@@ -108,7 +108,7 @@ const Listings = ({ listings, category }: Props) => {
                   <Text style={styles.itemTxt} numberOfLines={1}>
                     {item.name}
                   </Text>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <View style={styles.infoContainer}>
                     <View style={styles.locationContainer}>
                       <FontAwesome5 name="map-marker-alt" size={18} color={Colors.primaryColor} />
                       <Text style={styles.itemLocationTxt}>{item.location}</Text>
@@ -124,7 +124,6 @@ const Listings = ({ listings, category }: Props) => {
 
             {expandedItem === item.id && (
               <Animated.View style={[styles.card, styles.cardBack, flipToBackStyle]}>
-                <Image source={{ uri: item.image }} style={[styles.image, styles.flippedImage]} />
                 <View style={styles.backContent}>
                   <Text style={styles.backTitle}>{item.name}</Text>
                   <Text style={styles.backDescription}>{item.description}</Text>
@@ -200,6 +199,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: Colors.white,
   },
+  infoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   locationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -220,13 +224,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  flippedImage: {
-    opacity: 0.2,
-  },
   backContent: {
-    position: 'absolute',
-    alignItems: 'center',
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: '#5C8374',
+    position: 'absolute',
+    backfaceVisibility: 'hidden',
   },
   backTitle: {
     fontSize: 18,

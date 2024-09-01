@@ -37,7 +37,7 @@ const CategoryButtons = ({onCagtegoryChanged}: Props) => {
   };
 
   return (
-    <View>
+    <View style={{marginTop:20}}>
 
       <GSAPToTextAnimator
         content="Categories"
