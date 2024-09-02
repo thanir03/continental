@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React from 'react'
 
-const CitiesDetails = () => {
+const CityDetails = () => {
     const { id } = useLocalSearchParams();
     return(
         <View>
@@ -11,6 +11,6 @@ const CitiesDetails = () => {
     ) 
 }
 
-export default CitiesDetails;
+export default CityDetails;
 
 const styles = StyleSheet.create({})

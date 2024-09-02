@@ -20,6 +20,7 @@ import Listings from "@/components/Listings";
 import TextAnimator from "@/TypingAnimations/TextAnimator";
 import PopularCarousel from '@/components/ParallaxCarousel';
 import CitiesCarousel from '@/components/CitiesCarousel';
+import { useRouter } from 'expo-router';
 
 const { height } = Dimensions.get('window');
 
@@ -100,6 +101,8 @@ export default function Page() {
     extrapolate: 'clamp',
   });
 
+  const router = useRouter();
+
   return (
     <View style={{ backgroundColor: Color.bgColor, flex: 1 }}>
       <StatusBar barStyle="dark-content" />
@@ -148,16 +151,17 @@ export default function Page() {
              textStyle={styles.headerTitle}
           />
             
-            <View style={styles.inputWrapper}>
-              <TextInput
-                placeholder="Where are you going?"
-                placeholderTextColor={Colors.white}
-                style={styles.input}
-              />
-              <View style={styles.inputIcon}>
-                <Feather color={Colors.white} name="search" size={16} />
-              </View>
+         <View style={styles.inputWrapper}>
+            <TouchableOpacity
+              style={styles.input}
+              onPress={() => router.push('/utilities/search')}
+               >
+            <Text style={styles.input}>Where are you going?</Text>
+            <View style={styles.inputIcon}>
+             <Feather color="#fff" name="search" size={20} />
             </View>
+           </TouchableOpacity>
+          </View>
           </Animated.View>
         </ImageBackground>
       </Animated.View>
@@ -202,7 +206,8 @@ const styles = StyleSheet.create({
   },
   headerImage: {
     resizeMode: 'cover',
-    borderRadius: 20,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   headerTitle: {
     color: '#fff',
@@ -212,22 +217,26 @@ const styles = StyleSheet.create({
   },
 
   inputWrapper: {
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    height: 48,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: Colors.white,
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 13, // Add margin to push the input down a bit
+    paddingTop: 8,
   },
   input: {
-    backgroundColor: 'rgba(255,255,255,0.5)',
-    borderRadius: 100,
-    borderColor: Colors.white,
-    height: 48,
+    color: 'white',
     paddingHorizontal: 16,
-    fontSize: 16,
+    fontSize: 18,
     flex: 1,
   },
   inputIcon: {
     position: 'absolute',
     right: 16,
+    bottom: 15,
   },
   headerContent: {
     justifyContent: 'center',
@@ -248,6 +257,6 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 80,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
 });

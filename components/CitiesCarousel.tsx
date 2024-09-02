@@ -14,7 +14,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Link } from 'expo-router';
 
 const { width } = Dimensions.get('screen');
-const ITEM_WIDTH = width * 0.60;
+const ITEM_WIDTH = width * 0.65;
 const ITEM_HEIGHT = 350;
 
 interface City {
@@ -123,6 +123,7 @@ const CityCarousel = () => {
                     <Image source={{ uri: item.image }} style={styles.image} />
                     <View style={styles.textOverlay}>
                       <Text style={styles.cityName}>{item.name}</Text>
+                      <Text style={styles.ExploreText}>Explore</Text>
                     </View>
                   </Animated.View>
                 </View>
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   imageContainer: {
-    borderRadius: 30,
+    borderRadius: 20,
     overflow: 'hidden',
     marginHorizontal: 10, // Directly controls the gap between items
     backgroundColor: '#333',
@@ -172,7 +173,13 @@ const styles = StyleSheet.create({
   cityName: {
     fontSize: 18,
     color: '#fff',
-    fontWeight: '600',
+    fontWeight: '800',
+    paddingBottom:6,
+  },
+  ExploreText: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: '400',
   },
   loadingContainer: {
     flex: 1,
