@@ -1,8 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
   Animated,
+  StatusBar,
+  ScrollView,
   TextInput,
   ImageBackground,
   Dimensions,
@@ -13,8 +15,10 @@ import Color from "@/constants/Colors";
 import VideoCarousel from "@/components/VideoCarousel";
 import CategoryButtons from "@/components/CategoryButton";
 import Listings from "@/components/Listings";
-import listingData from "@/data/destinations.json";
 import TextAnimator from "@/TypingAnimations/TextAnimator";
+import PopularCarousel from '@/components/ParallaxCarousel';
+import CitiesCarousel from '@/components/CitiesCarousel';
+import { useRouter } from 'expo-router';
 import { SheetManager } from "react-native-actions-sheet";
 
 const { height } = Dimensions.get("window");
@@ -52,10 +56,34 @@ export default function HomePage() {
     },
   ];
 
+
   const [category, setCategory] = useState("All");
+  const [destinations, setDestinations] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('http://10.0.2.2:5000/destinations')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Destination Data fetched successfully:', data);
+        setDestinations(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching data:', err);
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
 
   const onCatChanged = (category: string) => {
-    console.log("Categpry: ", category);
+    console.log("Category: ", category);
     setCategory(category);
   };
 
@@ -93,8 +121,11 @@ export default function HomePage() {
     extrapolate: "clamp",
   });
 
+  const router = useRouter();
+
   return (
     <View style={{ backgroundColor: Color.bgColor, flex: 1 }}>
+      <StatusBar barStyle="dark-content" />
       <Animated.View
         style={[
           styles.header,
@@ -149,21 +180,23 @@ export default function HomePage() {
               },
             ]}
           >
-            <TextAnimator
-              content="Hello, tell us where to go?"
-              textStyle={styles.headerTitle}
-            />
 
-            <View style={styles.inputWrapper}>
-              <TextInput
-                placeholder="Where are you going?"
-                placeholderTextColor={Colors.white}
-                style={styles.input}
-              />
-              <View style={styles.inputIcon}>
-                <Feather color={Colors.white} name="search" size={16} />
-              </View>
+          <TextAnimator
+             content = "Hello, tell us where to go?"
+             textStyle={styles.headerTitle}
+          />
+            
+         <View style={styles.inputWrapper}>
+            <TouchableOpacity
+              style={styles.input}
+              onPress={() => router.push('/utilities/search')}
+               >
+            <Text style={styles.input}>Where are you going?</Text>
+            <View style={styles.inputIcon}>
+             <Feather color="#fff" name="search" size={20} />
             </View>
+           </TouchableOpacity>
+          </View>
           </Animated.View>
         </ImageBackground>
       </Animated.View>
@@ -173,17 +206,15 @@ export default function HomePage() {
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: true }
         )}
-        scrollEventThrottle={16}
+        scrollEventThrottle={20}
         keyboardShouldPersistTaps="handled"
       >
         <VideoCarousel posts={videos} />
-
-        {/* Change to city buttons  */}
+        <PopularCarousel/>
         <CategoryButtons onCagtegoryChanged={onCatChanged} />
-
-        <Listings listings={listingData} category={category} />
+        <Listings listings={destinations} category={category} />
+        <CitiesCarousel/>
       </Animated.ScrollView>
-
       <View style={styles.bottomSpacer} />
     </View>
   );
@@ -209,7 +240,9 @@ const styles = StyleSheet.create({
     paddingRight: 10, // Add some padding to the left if needed
   },
   headerImage: {
-    resizeMode: "cover",
+    resizeMode: 'cover',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   headerTitle: {
     color: "#fff",
@@ -219,22 +252,26 @@ const styles = StyleSheet.create({
   },
 
   inputWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    height: 48,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: Colors.white,
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 13, // Add margin to push the input down a bit
+    paddingTop: 8,
   },
   input: {
-    backgroundColor: "rgba(255,255,255,0.5)",
-    borderRadius: 100,
-    borderColor: Colors.white,
-    height: 48,
+    color: 'white',
     paddingHorizontal: 16,
-    fontSize: 16,
+    fontSize: 18,
     flex: 1,
   },
   inputIcon: {
     position: "absolute",
     right: 16,
+    bottom: 15,
   },
   headerContent: {
     justifyContent: "center",

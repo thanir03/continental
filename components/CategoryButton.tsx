@@ -36,8 +36,12 @@ const CategoryButtons = ({ onCagtegoryChanged }: Props) => {
   };
 
   return (
-    <View>
-      <GSAPToTextAnimator content="Categories" textStyle={styles.title} />
+    <View style={{marginTop:20}}>
+
+      <GSAPToTextAnimator
+        content="Categories"
+        textStyle={styles.title}
+      />
       <ScrollView
         ref={scrollRef}
         horizontal

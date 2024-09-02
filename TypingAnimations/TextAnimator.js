@@ -22,11 +22,11 @@ export default class TextAnimator extends React.Component {
         const animations = this.textArr.map((_, i) => {
             return Animated.timing(this.animatedValues[i], {
                 toValue,
-                duration: 500,
+                duration: 300,
                 useNativeDriver: true, // Add useNativeDriver for better performance
             });
         });
-        Animated.stagger(100, animations).start();
+        Animated.stagger(80, animations).start();
     }
 
     render() {

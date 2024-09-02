@@ -128,6 +128,8 @@ const VideoCarousel: React.FC<VideoCarouselProps> = ({ posts }) => {
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
+        snapToInterval={VIDEO_CARD_WIDTH + 10}
+        decelerationRate={0.8}
         onScroll={handleScroll}
         scrollEventThrottle={16}
         ref={scrollViewRef}
