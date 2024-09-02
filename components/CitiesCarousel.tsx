@@ -155,6 +155,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginHorizontal: 10, // Directly controls the gap between items
     backgroundColor: '#333',
+    right: 8,
   },
   image: {
     width: '100%',

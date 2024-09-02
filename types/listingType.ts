@@ -1,5 +1,5 @@
 export interface ListingType {
-    id: string;
+    hotelId: string;
     name: string;
     image: string;
     description: string;

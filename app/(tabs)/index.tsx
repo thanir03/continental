@@ -11,6 +11,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import Color from '@/constants/Colors';
@@ -38,29 +39,6 @@ export default function Page() {
   ];
 
   const [category, setCategory] = useState("All");
-  const [destinations, setDestinations] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetch('http://10.0.2.2:5000/destinations')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Destination Data fetched successfully:', data);
-        setDestinations(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error fetching data:', err);
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
 
   const onCatChanged = (category: string) => {
     console.log("Category: ", category);
@@ -114,7 +92,7 @@ export default function Page() {
       >
         <ImageBackground
           source={require('@/assets/images/Wallpaper.jpg')}
-          style={[styles.headerBackground, { borderRadius: 50 }]}
+          style={[styles.headerBackground]}
           imageStyle={styles.headerImage}
         >
           <Animated.View style={styles.headerTopBar}>
@@ -177,7 +155,7 @@ export default function Page() {
         <VideoCarousel posts={videos} />
         <PopularCarousel/>
         <CategoryButtons onCagtegoryChanged={onCatChanged} />
-        <Listings listings={destinations} category={category} />
+        <Listings category={category} />
         <CitiesCarousel/>
       </Animated.ScrollView>
       <View style={styles.bottomSpacer} />
@@ -204,12 +182,12 @@ const styles = StyleSheet.create({
     paddingLeft: 10, // Add some padding to the left if needed
     paddingRight: 10, // Add some padding to the left if needed
   },
-  headerImage: {
+  headerImage:{
     resizeMode: 'cover',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
-  headerTitle: {
+  headerTitle:{
     color: '#fff',
     fontSize: 26,
     fontWeight: 'bold',

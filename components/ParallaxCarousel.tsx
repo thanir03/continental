@@ -90,7 +90,7 @@ const PopularCarousel = () => {
           });
 
           return (
-            <Link href={`/listing/${item.id}`} asChild>
+            <Link href={`/listing/${item.hotelId}`} asChild>
               <Pressable>
               <View style={styles.itemContainer}>
                 <View style={styles.imageContainer}>

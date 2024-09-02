@@ -11,7 +11,6 @@ import destinationCategories from "@/data/categories";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import GSAPToTextAnimator from '@/TypingAnimations/GsapToAnimation';
 
-
 type Props = {
   onCagtegoryChanged: (category: string) => void;
 }
