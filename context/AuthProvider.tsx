@@ -15,16 +15,19 @@ GoogleSignin.configure({
   offlineAccess: true,
 });
 
-interface PasswordUser {
+export interface PasswordUser {
   email: string;
   password: string;
-  auth_type: string;
+  name: string;
 }
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<PasswordUser | User | null>(null);
   const [accessToken, setAccessToken] = useState<string>("");
+  const [authType, setAuthType] = useState<"" | "password" | "oauth_google">(
+    ""
+  );
 
   const checkIfUserIsLoggedIn = async () => {
     try {
@@ -72,10 +75,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log("accessToken", await AsyncStorage.getItem("@access_token"));
       console.log("user store", await AsyncStorage.getItem("@user"));
       console.log("auth_type store", await AsyncStorage.getItem("@auth_type"));
+      console.log("auth_type state", authType);
       console.log("----");
     };
     fn();
-  }, [isLoggedIn, user]);
+  }, [isLoggedIn, user, authType]);
 
   const handleLoginWithGoogle = async () => {
     try {
@@ -90,7 +94,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           "oauth_google",
           response.accessToken,
           userInfo.user.email,
-          response.user
+          userInfo
         );
         return response;
       }
@@ -121,7 +125,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     auth_type: string,
     accessToken: string,
     email: string,
-    user: any
+    user: User | PasswordUser
   ) => {
     AsyncStorage.setItem("@auth_type", auth_type);
     AsyncStorage.setItem("@access_token", accessToken);
@@ -129,6 +133,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(user);
     setIsLoggedIn(true);
     setAccessToken(accessToken);
+    setAuthType(auth_type as "oauth_google" | "password");
     ToastAndroid.show(`Successfully logged in as ${email}`, ToastAndroid.SHORT);
   };
 
@@ -137,6 +142,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsLoggedIn(false);
     setUser(null);
     setAccessToken("");
+    setAuthType("");
     if (!isLoggedIn) {
       return;
     } else {
@@ -150,6 +156,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user,
         isLoggedIn,
         accessToken,
+        authType,
         onLoginWithGoogle: handleLoginWithGoogle,
         onLoginWithPassword: handleLoginWithPassword,
         onRegisterWithPassword: handleRegisterWithPassword,
