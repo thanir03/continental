@@ -4,7 +4,7 @@ import { ScrollView, TouchableOpacity, View, StyleSheet, Dimensions, NativeSynth
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
 import { Ionicons } from '@expo/vector-icons';
 import GSAPToTextAnimator from '@/TypingAnimations/GsapToAnimation';
-
+import Colors from "@/constants/Colors";
 
 const { width } = Dimensions.get("window");
 
@@ -183,8 +183,8 @@ const VideoCarousel: React.FC<VideoCarouselProps> = ({ posts }) => {
         <TouchableOpacity onPress={isLastVideoFinished ? resetToFirstVideo : togglePlayPause}>
           <Ionicons
             name={isLastVideoFinished ? "refresh-circle" : (isPlaying ? "pause-circle" : "play-circle")}
-            size={50}
-            color="grey"
+            size={55}
+            color={Colors.primaryColor}
             style={styles.controlIcon}
           />
         </TouchableOpacity>
@@ -262,7 +262,15 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: 120,
     height: 30,
-    backgroundColor: '#444',
+    elevation: 5,
+    backgroundColor: "#fff",
+    shadowColor: '#6699CC',
+    shadowOffset: {
+       width: 0,
+       height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
     borderRadius: 50,
     paddingHorizontal: 15,
     justifyContent: 'space-between',
@@ -271,7 +279,7 @@ const styles = StyleSheet.create({
     width: 7,
     height: 7,
     borderRadius: 5,
-    backgroundColor: 'lightgray',
+    backgroundColor: Colors.primaryColor,
     overflow: 'hidden',
   },
   activeDot: {
@@ -280,7 +288,7 @@ const styles = StyleSheet.create({
   },
   progressIndicator: {
     height: '100%',
-    backgroundColor: 'white',
+    backgroundColor: Colors.primaryColor,
     borderRadius: 50,
     position: 'absolute',
     left: 0,

@@ -107,9 +107,13 @@ export default function FullBookingList() {
           <Ionicons name="arrow-back" size={24} color="#fff"/>
         </TouchableOpacity>
         <Text style={styles.title}>Booking List</Text>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Current</Text>
+        
+     <View style={[styles.buttonContainer]}>
+        <TouchableOpacity style={[styles.button]}>
+           <Text style={styles.buttonText}>All</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button}>
+           <Text style={styles.buttonText}>Current</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Pending</Text>
@@ -117,7 +121,7 @@ export default function FullBookingList() {
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Past</Text>
         </TouchableOpacity>
-    </View>
+     </View>
       </ImageBackground>
       <StatusBar hidden />
       <FlatList
@@ -138,7 +142,7 @@ export default function FullBookingList() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F6F8FD',
   },
   headerBackground: {
     height: height * 0.20,
@@ -174,14 +178,14 @@ const styles = StyleSheet.create({
     bottom: 5,
     paddingHorizontal: 10,
     paddingVertical: 5,
+    paddingTop: 10,
     borderRadius: 5,
-    
+    marginLeft: 10,
   },
   button: {
-    width: 100,
-    paddingVertical: 2,
+    paddingVertical: 5,
     margin: 5, 
-    paddingHorizontal: 10, 
+    paddingHorizontal: 15, 
     borderRadius: 10, 
     textAlign: 'center',
     alignItems: 'center', // Center content horizontally
@@ -190,6 +194,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16, // Set font size
     color: '#fff', // Set text color
+    fontWeight: "500",
   },
   contentContainer: {
     paddingTop: 5,

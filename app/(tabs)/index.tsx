@@ -49,7 +49,7 @@ export default function Page() {
 
   // Define header height ranges
   const headerHeight = height * 0.8; // Maximum height of the header (80% of screen height)
-  const minHeaderHeight = height * 0.28; // Minimum height of the header
+  const minHeaderHeight = height * 0.25; // Minimum height of the header
   const fixedPosition = minHeaderHeight * 0.5; // Adjust based on where you want to fix the text and input
 
   // Interpolate the header height based on scroll position
@@ -69,7 +69,7 @@ export default function Page() {
   // Calculate translateY for the text and search bar to stop at fixedPosition
   const translateYTextInput = scrollY.interpolate({
     inputRange: [0, fixedPosition],
-    outputRange: [0, 0.55*(headerHeight - minHeaderHeight)], // Reduce the translation amount
+    outputRange: [0, 0.58*(headerHeight - minHeaderHeight)], // Reduce the translation amount
     extrapolate: 'clamp',
   });
 
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   content: {
     padding: 24,
     paddingTop: height * 0.8, // Adjust padding to account for the initial header height
-    backgroundColor: '#fff',
+    backgroundColor: '#F6F8FD',
   },
   header: {
     position: 'absolute',
@@ -179,8 +179,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-start', // Align items to the left
-    paddingLeft: 10, // Add some padding to the left if needed
-    paddingRight: 10, // Add some padding to the left if needed
+    paddingLeft: 8, // Add some padding to the left if needed
+    paddingRight: 8, // Add some padding to the left if needed
   },
   headerImage:{
     resizeMode: 'cover',
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 26,
     fontWeight: 'bold',
-    paddingBottom: 5,
+    paddingBottom: 6,
   },
 
   inputWrapper: {
@@ -202,12 +202,12 @@ const styles = StyleSheet.create({
     borderColor: Colors.white,
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 13, // Add margin to push the input down a bit
-    paddingTop: 8,
+    paddingTop: 5,
   },
   input: {
     color: 'white',
     paddingHorizontal: 16,
+    paddingTop: 2,
     fontSize: 18,
     flex: 1,
   },
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    paddingHorizontal: 24,
+    paddingHorizontal: 5,
     paddingVertical: 16,
   },
   headerTopBar: {
@@ -235,6 +235,6 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 80,
-    backgroundColor: "#fff",
+    backgroundColor: "#F6F8FD",
   },
 });

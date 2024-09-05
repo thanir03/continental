@@ -13,16 +13,23 @@ const _layout = () => {
         tabBarShowLabel: false,
         tabBarStyle: {
           position: 'absolute',
-          height: 50,
+          height: 60,
           bottom: 10,
           paddingHorizontal: 10,
-          left: 16,
-          right: 16,
-          elevation: 0,
-          backgroundColor: "#333333", // Set the background color of the tab bar
-          borderRadius: 20,
+          left: 20,
+          right: 20,
+          elevation: 10,
+          backgroundColor: "#fff", // #2D3037
+          borderRadius: 40,
           alignItems: 'center',
           justifyContent: 'center',
+          shadowColor: '#6699CC',
+          shadowOffset: {
+             width: 0,
+             height: 2,
+           },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
           zIndex: 1,
         },
       }}
@@ -38,7 +45,7 @@ const _layout = () => {
             >
               <Ionicons
                 name={focused ? 'home' : 'home-outline'}
-                color={focused ? 'white' : 'gray'} // Active icon is white, inactive is gray
+                color={focused ? Colors.primaryColor : 'gray'} // Active icon is white, inactive is gray
                 size={24}
                 style={focused ? { textShadowColor: 'white', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 4 } : {}}
               />
@@ -57,7 +64,7 @@ const _layout = () => {
             >
               <Ionicons
                 name={focused ? 'calendar' : 'calendar-outline'}
-                color={focused ? 'white' : 'gray'} // Active icon is white, inactive is gray
+                color={focused ? Colors.primaryColor : 'gray'} // Active icon is white, inactive is gray
                 size={24}
                 style={focused ? { textShadowColor: 'white', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 4 } : {}}
               />
@@ -76,7 +83,7 @@ const _layout = () => {
             >
               <Ionicons
                 name={focused ? 'chatbubble' : 'chatbubble-outline'}
-                color={focused ? 'white' : 'gray'} // Active icon is white, inactive is gray
+                color={focused ? Colors.primaryColor  : 'gray'} // Active icon is white, inactive is gray
                 size={24}
                 style={focused ? { textShadowColor: 'white', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 4 } : {}}
               />
@@ -95,7 +102,7 @@ const _layout = () => {
             >
               <Ionicons
                 name={focused ? 'bookmark' : 'bookmark-outline'}
-                color={focused ? 'white' : 'gray'} // Active icon is white, inactive is gray
+                color={focused ? Colors.primaryColor  : 'gray'} // Active icon is white, inactive is gray
                 size={24}
                 style={focused ? { textShadowColor: 'white', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 4 } : {}}
               />
@@ -114,7 +121,7 @@ const _layout = () => {
             >
               <Ionicons
                 name={focused ? 'person' : 'person-outline'}
-                color={focused ? 'white' : 'gray'} // Active icon is white, inactive is gray
+                color={focused ? Colors.primaryColor  : 'gray'} // Active icon is white, inactive is gray
                 size={24}
                 style={focused ? { textShadowColor: 'white', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 4 } : {}}
               />

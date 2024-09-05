@@ -16,6 +16,7 @@ export default function Booking() {
   const [beaches, setBeaches] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { width: screenWidth } = Dimensions.get('screen');
 
   useEffect(() => {
     fetch('http://10.0.2.2:5000/hotels/Beaches')
@@ -85,15 +86,15 @@ export default function Booking() {
       <ScrollView style={styles.content}>
           <BookingList/>
           <CitiesCarousel/>
-          <View style={{paddingVertical:20}}>
+          <View style={{paddingVertical:10}}>
             <Text style={styles.title}>Mountains</Text>
-            <Listings category="Mountains" />
+            <Listings category="Mountains" height={250} width={screenWidth/1.8}/>
           </View>
           <View>
             <Text style={styles.title}>Beaches</Text>
             <Listings category="Beaches" listingData={beaches}/>
           </View>
-          <View>
+          <View style={{paddingVertical:10}}>
             <Text style={styles.title}>Forest</Text>
             <Listings category="Forests" listingData={forest}/>
           </View>
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
   content: {
     padding: 24,
     paddingTop: height * 0.2, // Adjust padding to account for the initial header height
-    backgroundColor: '#fff',
+    backgroundColor: '#F6F8FD',
   },
   header: {
     position: 'absolute',
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingBottom: 5,
     marginRight: 250,
-    marginTop: 30,
+    marginTop: 50,
   },
   headerBackground: {
     flex: 1,
@@ -146,6 +147,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     width: '100%', // Make inputWrapper full width
     alignItems: 'center', // Center the content horizontally
+    paddingBottom: 25,
   },
   inputTouchable: {
     backgroundColor: 'rgba(255,255,255,0.3)',
@@ -168,6 +170,6 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 230,
-    backgroundColor: "#fff",
+    backgroundColor: "#F6F8FD",
   },
 });

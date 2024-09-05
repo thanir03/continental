@@ -16,12 +16,14 @@ import { Link } from 'expo-router';
 
 type Props = {
   category: string;
-  listingData?: ListingType[]; // Optional prop for listing data
+  listingData?: ListingType[]; 
+  height?: number;
+  width ?: number;
 };
 
-const { width } = Dimensions.get('screen');
+const { width: screenWidth } = Dimensions.get('screen');
 
-const Listings = ({ category, listingData }: Props) => {
+const Listings = ({ category, listingData, height=230, width= screenWidth/2  }: Props) => {
   const [destinations, setDestinations] = useState<ListingType[]>(listingData || []);
   const [loading, setLoading] = useState<boolean>(!listingData);
   const [error, setError] = useState<string | null>(null);
@@ -155,7 +157,7 @@ const Listings = ({ category, listingData }: Props) => {
           onLongPress={() => handleLongPress(item.hotelId)}
           onPressOut={() => handlePressOut(item.hotelId)}
         >
-          <View style={styles.cardContainer}>
+          <View style={[styles.cardContainer, { height, width } ]}>
             <Animated.View style={[styles.card, flipToFrontStyle]}>
               <View style={styles.imageContainer}>
                 <Image source={{ uri: item.image }} style={styles.image} />
@@ -211,8 +213,8 @@ export default Listings;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    width: width / 2,
-    height: 230,
+    //width: screenWidthwidth / 2,
+    //height: 230,
     marginRight: 20,
     position: 'relative',
   },

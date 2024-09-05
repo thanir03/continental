@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F6F8FD',
     justifyContent: 'flex-start',
     paddingHorizontal: 5,
   },
