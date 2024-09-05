@@ -1,6 +1,8 @@
-import { StyleSheet, Text, View, FlatList, ActivityIndicator, StatusBar, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, FlatList, ActivityIndicator, StatusBar, Image, Dimensions, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import Colors from "@/constants/Colors";
+import { useRouter } from 'expo-router';
+import Toast from 'react-native-toast-message';
 
 interface Booking {
   bookingId: string;
@@ -19,6 +21,8 @@ export default function BookingList() {
   const [booking, setBooking] = useState<Booking[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     fetch('http://10.0.2.2:5000/booking/join')
@@ -71,17 +75,57 @@ export default function BookingList() {
     );
   };
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Booking List</Text>
-      <StatusBar hidden />
+  const renderHorizontalList = ({ item }: { item: Booking[] }) => {
+    return (
       <FlatList
-        data={booking}
+        data={item}
         renderItem={renderItem}
         keyExtractor={(item) => item.bookingId}
-        initialNumToRender={5}  // Load the first 5 items
-        maxToRenderPerBatch={5}  // Render 5 more items with each scroll
-        windowSize={5}  // Maintain 5 items in the render window
+        scrollEnabled={false} // Disable vertical scroll
+      />
+    );
+  };
+
+  const groupedData = [];
+  for (let i = 0; i < booking.length; i += 3) {
+    groupedData.push(booking.slice(i, i + 3));
+  }
+
+  if (booking.length === 0) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Recent Bookings</Text>
+        <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>No bookings available</Text>
+      </View>
+     </View>
+
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.headerContent}>
+        <Text style={styles.title}>Recent Booking</Text>
+        <TouchableOpacity onPress={() => {
+            router.push('/utilities/fullBooking');
+          }}>
+          <Text style={styles.viewMore}>View More</Text>
+        </TouchableOpacity>
+      </View>
+      <StatusBar hidden />
+      <FlatList
+        data={groupedData}
+        renderItem={renderHorizontalList}
+        keyExtractor={(_, index) => index.toString()}
+        horizontal={true}
+        pagingEnabled={true} // Enable horizontal paging
+        showsHorizontalScrollIndicator={false}
+        snapToAlignment="center" // Center the group of 3 items when scrolling
+        decelerationRate="fast" // Faster snapping speed
+        getItemLayout={(data, index) => (
+          { length: Dimensions.get('window').width, offset: Dimensions.get('window').width * index, index }
+        )}
       />
     </View>
   );
@@ -93,18 +137,30 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: 'black',
     textAlign: 'left',
-    marginTop: 20,
     paddingLeft: 6,
   },
+  headerContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 20,
+    paddingHorizontal: 10,
+  },
+  viewMore: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: Colors.primaryColor,
+    marginTop: 20,
+  },
   item: {
-    backgroundColor: Colors.white,
+    backgroundColor: '#fff',
     padding: 10,
     borderRadius: 10,
     marginVertical: 10,
     marginHorizontal: 5,
     flexDirection: 'row',
     alignItems: "flex-start",
-    shadowColor: "#000",
+    shadowColor: '#6699CC',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -112,6 +168,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    width: Dimensions.get('window').width * 0.85, // Adjust width
   },
   image: {
     width: 60,
@@ -153,5 +210,22 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 16,
     color: 'red',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 20,
+    padding: 20,
+    height: 220,
+    borderWidth: 3,
+    borderRadius: 10,
+    borderColor: 'grey',
+    borderStyle: 'dashed',
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'grey',
   },
 });

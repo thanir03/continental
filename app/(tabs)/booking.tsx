@@ -1,10 +1,11 @@
-import { Dimensions, ImageBackground, StyleSheet, View, TouchableOpacity, Text, ScrollView } from 'react-native';
+import { Dimensions, ImageBackground, StyleSheet, View, TouchableOpacity, Text, ScrollView, PanResponder, Animated } from 'react-native';
 import React, { useRef, useState, useEffect } from 'react';import Color from '@/constants/Colors';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import TextAnimator from "@/TypingAnimations/TextAnimator";
 import Listings from "@/components/Listings";
 import CitiesCarousel from '@/components/CitiesCarousel';
+import BookingList from '@/components/bookingList';
 
 const { height } = Dimensions.get('window');
 
@@ -82,6 +83,7 @@ export default function Booking() {
         </ImageBackground>
       </View>
       <ScrollView style={styles.content}>
+          <BookingList/>
           <CitiesCarousel/>
           <View style={{paddingVertical:20}}>
             <Text style={styles.title}>Mountains</Text>

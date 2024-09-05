@@ -157,8 +157,8 @@ export default function Page() {
         <CategoryButtons onCagtegoryChanged={onCatChanged} />
         <Listings category={category} />
         <CitiesCarousel/>
+        <View style={styles.bottomSpacer} />
       </Animated.ScrollView>
-      <View style={styles.bottomSpacer} />
     </View>
   );
 }

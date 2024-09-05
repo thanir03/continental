@@ -18,7 +18,7 @@ const ITEM_WIDTH = width * 0.65;
 const ITEM_HEIGHT = 350;
 
 interface City {
-  id: string;   // Ensure that id is of type string
+  cityId: string;   // Ensure that id is of type string
   name: string;
   image: string;
 }
@@ -53,7 +53,7 @@ const CityCarousel = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="grey" />
       </View>
     );
   }
@@ -72,7 +72,7 @@ const CityCarousel = () => {
       <StatusBar hidden />
       <Animated.FlatList
         data={cities}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.cityId}
         horizontal
         showsHorizontalScrollIndicator={false}
         snapToInterval={ITEM_WIDTH}
@@ -108,7 +108,7 @@ const CityCarousel = () => {
           });
 
           return (
-            <Link href={`/cities/${item.id}`} asChild>
+            <Link href={`/cities/${item.cityId}`} asChild>
               <Pressable>
                 <View style={{ width: ITEM_WIDTH, marginTop: 10 }}>
                   <Animated.View
