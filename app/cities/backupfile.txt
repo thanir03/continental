@@ -5,7 +5,7 @@ import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Colors from '@/constants/Colors';
 import { LinearGradient } from 'expo-linear-gradient';
-import MapView, { PROVIDER_GOOGLE, Marker, Region } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 
 // Define the types for Destination and City
 type Listings = {
@@ -69,45 +69,26 @@ const CityDetails = () => {
     }, [id]);
 
     // Calculate the date range
-     const currentDate = new Date();
-     const startDate = new Date(currentDate);
-     const endDate = new Date(currentDate);
+    // Calculate the date range
+const currentDate = new Date();
+const startDate = new Date(currentDate);
+const endDate = new Date(currentDate);
 
-     startDate.setDate(currentDate.getDate() + 7);
-     endDate.setDate(currentDate.getDate() + 8);
+startDate.setDate(currentDate.getDate() + 7);
+endDate.setDate(currentDate.getDate() + 8);
 
-     const formatDate = (date: Date) => date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+const formatDate = (date: Date) => date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-     const formattedStartDateString = formatDate(startDate); // e.g., "September 15, 2024"
-     const [month, day, year] = formattedStartDateString.split(' ');
+// Extract day and month/year separately for startDate
+    const formattedStartDateString = formatDate(startDate); // e.g., "September 15, 2024"
+    const [month, day, year] = formattedStartDateString.split(' '); // Split into ["September", "15, 2024"]
+
+// Use the correct day of the month for startDate and endDate
      const formattedStartDay = startDate.getDate(); // e.g., 15
-     const formattedEndDay = endDate.getDate(); // e.g., 16
+    const formattedEndDay = endDate.getDate(); // e.g., 16
 
-     const dateRange = `${formattedStartDay}, ${formattedEndDay} ${month} ${year}`;
-
-    // Sample coordinates for map region and markers
-     const initialRegion: Region = {
-        latitude: 37.78825, // Sample latitude
-        longitude: -122.4324, // Sample longitude
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-     };
-
-    // Sample markers (replace with real data)
-    const markers = [
-        {
-            id: '1',
-            title: 'Hotel A',
-            description: 'Description A',
-            coordinate: { latitude: 37.78825, longitude: -122.4324 },
-        },
-        {
-            id: '2',
-            title: 'Hotel B',
-            description: 'Description B',
-            coordinate: { latitude: 37.78845, longitude: -122.4314 },
-        },
-    ];
+     // Reconstruct the date range
+    const dateRange = `${formattedStartDay}, ${formattedEndDay} ${month} ${year}`;
 
     if (loading) {
         return <ActivityIndicator size="large" color={Colors.primaryColor} />;
@@ -134,20 +115,7 @@ const CityDetails = () => {
                     )}
                 </LinearGradient>
 
-                <MapView
-                    provider={PROVIDER_GOOGLE}
-                    style={styles.map}
-                    initialRegion={initialRegion}
-                >
-                    {markers.map((marker) => (
-                        <Marker
-                            key={marker.id}
-                            coordinate={marker.coordinate}
-                            title={marker.title}
-                            description={marker.description}
-                        />
-                    ))}
-                </MapView>
+                <MapView provider={PROVIDER_GOOGLE}/>
 
                 <BottomSheet
                     ref={bottomSheetRef}
@@ -170,7 +138,7 @@ const CityDetails = () => {
     );
 };
 
-export default CityDetails;
+export default CityDetails
 
 const styles = StyleSheet.create({
     container: {
@@ -181,6 +149,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         elevation: 5,
+        
     },
     title: {
         fontSize: 24,
@@ -190,10 +159,7 @@ const styles = StyleSheet.create({
     dateText: {
         fontSize: 16,
         color: 'white',
-    },
-    map: {
-        height: '100%',
-        width: '100%',
+
     },
     contentContainer: {
         flexGrow: 1,
@@ -206,8 +172,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         shadowColor: '#6699CC',
         shadowOffset: {
-            width: 0,
-            height: 2,
+          width: 0,
+          height: 2,
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,

@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   contentContainer: {
-    paddingTop: 5,
+    paddingTop: 10,
     paddingBottom: 20,
   },
   item: {

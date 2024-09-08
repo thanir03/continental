@@ -1,3 +1,4 @@
+import Colors from '@/constants/Colors';
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, SharedValue } from 'react-native-reanimated';
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
   listItem: {
     height: 200,
     width: '90%',
-    backgroundColor: '#0000FF', // Solid blue color
+    backgroundColor: Colors.primaryColor, // Solid blue color
     alignSelf: 'center',
     borderRadius: 15,
     marginTop: 30,
