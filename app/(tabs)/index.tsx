@@ -9,10 +9,12 @@ import {
   ImageBackground,
   Dimensions,
   TouchableOpacity,
-} from "react-native";
-import { Feather, Ionicons } from "@expo/vector-icons";
-import Color from "@/constants/Colors";
-import VideoCarousel from "@/components/VideoCarousel";
+  Image,
+  ActivityIndicator,
+} from 'react-native';
+import { Feather, Ionicons } from '@expo/vector-icons';
+import Color from '@/constants/Colors';
+import VideoCarousel from '@/components/VideoCarousel';
 import CategoryButtons from "@/components/CategoryButton";
 import Listings from "@/components/Listings";
 import TextAnimator from "@/TypingAnimations/TextAnimator";
@@ -58,29 +60,6 @@ export default function HomePage() {
 
 
   const [category, setCategory] = useState("All");
-  const [destinations, setDestinations] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetch('http://10.0.2.2:5000/destinations')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Destination Data fetched successfully:', data);
-        setDestinations(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error fetching data:', err);
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
 
   const onCatChanged = (category: string) => {
     console.log("Category: ", category);
@@ -91,7 +70,7 @@ export default function HomePage() {
 
   // Define header height ranges
   const headerHeight = height * 0.8; // Maximum height of the header (80% of screen height)
-  const minHeaderHeight = height * 0.28; // Minimum height of the header
+  const minHeaderHeight = height * 0.25; // Minimum height of the header
   const fixedPosition = minHeaderHeight * 0.5; // Adjust based on where you want to fix the text and input
 
   // Interpolate the header height based on scroll position
@@ -111,8 +90,8 @@ export default function HomePage() {
   // Calculate translateY for the text and search bar to stop at fixedPosition
   const translateYTextInput = scrollY.interpolate({
     inputRange: [0, fixedPosition],
-    outputRange: [0, 0.55 * (headerHeight - minHeaderHeight)], // Reduce the translation amount
-    extrapolate: "clamp",
+    outputRange: [0, 0.58*(headerHeight - minHeaderHeight)], // Reduce the translation amount
+    extrapolate: 'clamp',
   });
 
   const translateYButton = scrollY.interpolate({
@@ -136,8 +115,8 @@ export default function HomePage() {
         ]}
       >
         <ImageBackground
-          source={require("@/assets/images/Wallpaper.jpg")}
-          style={[styles.headerBackground, { borderRadius: 50 }]}
+          source={require('@/assets/images/Wallpaper.jpg')}
+          style={[styles.headerBackground]}
           imageStyle={styles.headerImage}
         >
           <Animated.View style={styles.headerTopBar}>
@@ -212,10 +191,10 @@ export default function HomePage() {
         <VideoCarousel posts={videos} />
         <PopularCarousel/>
         <CategoryButtons onCagtegoryChanged={onCatChanged} />
-        <Listings listings={destinations} category={category} />
+        <Listings category={category} />
         <CitiesCarousel/>
+        <View style={styles.bottomSpacer} />
       </Animated.ScrollView>
-      <View style={styles.bottomSpacer} />
     </View>
   );
 }
@@ -225,7 +204,7 @@ const styles = StyleSheet.create({
   content: {
     padding: 24,
     paddingTop: height * 0.8, // Adjust padding to account for the initial header height
-    backgroundColor: "#fff",
+    backgroundColor: '#F6F8FD',
   },
   header: {
     position: "absolute",
@@ -234,21 +213,21 @@ const styles = StyleSheet.create({
   },
   headerBackground: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "flex-start", // Align items to the left
-    paddingLeft: 10, // Add some padding to the left if needed
-    paddingRight: 10, // Add some padding to the left if needed
+    justifyContent: 'center',
+    alignItems: 'flex-start', // Align items to the left
+    paddingLeft: 8, // Add some padding to the left if needed
+    paddingRight: 8, // Add some padding to the left if needed
   },
-  headerImage: {
+  headerImage:{
     resizeMode: 'cover',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
-  headerTitle: {
-    color: "#fff",
+  headerTitle:{
+    color: '#fff',
     fontSize: 26,
-    fontWeight: "bold",
-    paddingBottom: 5,
+    fontWeight: 'bold',
+    paddingBottom: 6,
   },
 
   inputWrapper: {
@@ -259,12 +238,12 @@ const styles = StyleSheet.create({
     borderColor: Colors.white,
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 13, // Add margin to push the input down a bit
-    paddingTop: 8,
+    paddingTop: 5,
   },
   input: {
     color: 'white',
     paddingHorizontal: 16,
+    paddingTop: 2,
     fontSize: 18,
     flex: 1,
   },
@@ -274,10 +253,10 @@ const styles = StyleSheet.create({
     bottom: 15,
   },
   headerContent: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    paddingHorizontal: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 5,
     paddingVertical: 16,
   },
   headerTopBar: {
@@ -292,6 +271,6 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 80,
-    backgroundColor: "#fff",
+    backgroundColor: "#F6F8FD",
   },
 });

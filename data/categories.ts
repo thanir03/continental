@@ -22,22 +22,6 @@ const destinationCategories = [
     {
       title: "Lakes",
       iconName: "swim"
-    },
-    {
-      title: "Historical Sites",
-      iconName: "castle"
-    },
-    {
-      title: "National Parks",
-      iconName: "pine-tree"
-    },
-    {
-      title: "Islands",
-      iconName: "island"
-    },
-    {
-      title: "Deserts",
-      iconName: "weather-sunny"
     }
   ];
   

@@ -48,7 +48,7 @@ const PopularCarousel = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="grey" />
       </View>
     );
   }
@@ -90,7 +90,7 @@ const PopularCarousel = () => {
           });
 
           return (
-            <Link href={`/listing/${item.id}`} asChild>
+            <Link href={`/listing/${item.hotelId}`} asChild>
               <Pressable>
               <View style={styles.itemContainer}>
                 <View style={styles.imageContainer}>
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F6F8FD',
     justifyContent: 'flex-start',
     paddingHorizontal: 5,
   },

@@ -1,0 +1,157 @@
+import { StyleSheet, Text, View, FlatList, ActivityIndicator, StatusBar, Image } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import Colors from "@/constants/Colors";
+
+interface Booking {
+  bookingId: string;
+  userId: string;
+  hotelId: string;
+  arrivalDate: string;
+  departureDate: string;
+  status: string;
+  name: string;
+  image: string;
+  description: string;
+  location: string;
+}
+
+export default function BookingList() {
+  const [booking, setBooking] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('http://10.0.2.2:5000/booking/join')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network Response not OK');
+        }
+        return response.json();
+      })
+      .then((data: Booking[]) => {
+        console.log('Booking data successfully loaded');
+        setBooking(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Error fetching data:', err);
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="grey" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>Error fetching data</Text>
+      </View>
+    );
+  }
+
+  const renderItem = ({ item }: { item: Booking }) => {
+    return (
+      <View style={styles.item}>
+        <Image source={{ uri: item.image }} style={styles.image} />
+        <View style={styles.textContainer}>
+          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.status}>{item.status}</Text>
+          <Text style={styles.dates}>
+            {new Date(item.arrivalDate).toLocaleDateString()} - {new Date(item.departureDate).toLocaleDateString()}
+          </Text>
+        </View>
+      </View>
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Booking List</Text>
+      <StatusBar hidden />
+      <FlatList
+        data={booking}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.bookingId}
+        initialNumToRender={5}  // Load the first 5 items
+        maxToRenderPerBatch={5}  // Render 5 more items with each scroll
+        windowSize={5}  // Maintain 5 items in the render window
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: 'black',
+    textAlign: 'left',
+    marginTop: 20,
+    paddingLeft: 6,
+  },
+  item: {
+    backgroundColor: Colors.white,
+    padding: 10,
+    borderRadius: 10,
+    marginVertical: 10,
+    marginHorizontal: 5,
+    flexDirection: 'row',
+    alignItems: "flex-start",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  image: {
+    width: 60,
+    height: 60,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  textContainer: {
+    flex: 1,
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  status: {
+    fontSize: 14,
+    color: Colors.primaryColor,
+  },
+  dates: {
+    fontSize: 14,
+    color: Colors.primaryColor,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    fontSize: 16,
+    color: 'red',
+  },
+});

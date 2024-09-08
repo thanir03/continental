@@ -9,7 +9,7 @@ import React, { useRef, useState } from "react";
 import Colors from "@/constants/Colors";
 import destinationCategories from "@/data/categories";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import GSAPToTextAnimator from "@/TypingAnimations/GsapToAnimation";
+import GSAPToTextAnimator from '@/TypingAnimations/GsapToAnimation';
 
 type Props = {
   onCagtegoryChanged: (category: string) => void;
@@ -101,10 +101,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 10,
-    shadowColor: "#333333",
-    shadowOffset: { width: 1, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    shadowColor: '#6699CC',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   categoryBtnActive: {
     flexDirection: "row",
@@ -113,10 +117,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 10,
-    shadowColor: "#333333",
-    shadowOffset: { width: 1, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    shadowColor: '#6699CC',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   categoryBtnTxt: {
     marginLeft: 5,

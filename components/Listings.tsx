@@ -15,20 +15,22 @@ import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 
 type Props = {
-  listings: ListingType[];
   category: string;
+  listingData?: ListingType[]; 
+  height?: number;
+  width ?: number;
 };
 
-const { width } = Dimensions.get("screen");
+const { width: screenWidth } = Dimensions.get('screen');
 
-const Listings = ({ listings, category }: Props) => {
-  const [loading, setLoading] = useState(false);
+const Listings = ({ category, listingData, height=230, width= screenWidth/2  }: Props) => {
+  const [destinations, setDestinations] = useState<ListingType[]>(listingData || []);
+  const [loading, setLoading] = useState<boolean>(!listingData);
+  const [error, setError] = useState<string | null>(null);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
-  // Using a ref to store Animated.Values for each listing
   const flipAnimations = useRef<{ [key: string]: Animated.Value }>({}).current;
 
-  // Initialize the animation for a given id if it doesn't exist
   const initializeAnimation = (id: string) => {
     if (!flipAnimations[id]) {
       flipAnimations[id] = new Animated.Value(0);
@@ -36,13 +38,68 @@ const Listings = ({ listings, category }: Props) => {
   };
 
   useEffect(() => {
-    setLoading(true);
-    const timer = setTimeout(() => {
+    if (listingData) {
+      // If listingData is provided, skip POST and GET requests
+      setDestinations(listingData);
       setLoading(false);
-    }, 200);
+    } else {
+      // If no listingData, perform POST and GET requests
+      const sendCategory = async () => {
+        try {
+          const response = await fetch('http://10.0.2.2:5000/hotels', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ category }),
+          });
 
-    return () => clearTimeout(timer);
-  }, [category]);
+          if (!response.ok) {
+            throw new Error('Failed to send category');
+          }
+
+          console.log('Category sent successfully');
+        } catch (err) {
+          console.error('Error sending category:', err);
+          setError((err as Error).message);
+        }
+      };
+
+      const fetchData = async () => {
+        setLoading(true);
+        setError(null);
+
+        try {
+          const response = await fetch('http://10.0.2.2:5000/hotels', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to fetch data');
+          }
+
+          const data = await response.json();
+          console.log('Destination Data fetched successfully:', data);
+          setDestinations(data);
+        } catch (err) {
+          console.error('Error fetching data:', err);
+          setError((err as Error).message);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const updateData = async () => {
+        await sendCategory(); // Send the category data first
+        await fetchData(); // Fetch the data afterward
+      };
+
+      updateData();
+    }
+  }, [category, listingData]);
 
   const handleLongPress = (id: string) => {
     initializeAnimation(id);
@@ -74,7 +131,7 @@ const Listings = ({ listings, category }: Props) => {
   };
 
   const renderItem = ({ item }: { item: ListingType }) => {
-    const flipAnimation = flipAnimations[item.id] || new Animated.Value(0);
+    const flipAnimation = flipAnimations[item.hotelId] || new Animated.Value(0);
 
     const frontInterpolate = flipAnimation.interpolate({
       inputRange: [0, 180],
@@ -95,12 +152,12 @@ const Listings = ({ listings, category }: Props) => {
     };
 
     return (
-      <Link href={`/hotel/${item.id}`} asChild>
+      <Link href={`/listing/${item.hotelId}`} asChild>
         <Pressable
-          onLongPress={() => handleLongPress(item.id)}
-          onPressOut={() => handlePressOut(item.id)}
+          onLongPress={() => handleLongPress(item.hotelId)}
+          onPressOut={() => handlePressOut(item.hotelId)}
         >
-          <View style={styles.cardContainer}>
+          <View style={[styles.cardContainer, { height, width } ]}>
             <Animated.View style={[styles.card, flipToFrontStyle]}>
               <View style={styles.imageContainer}>
                 <Image source={{ uri: item.image }} style={styles.image} />
@@ -132,7 +189,7 @@ const Listings = ({ listings, category }: Props) => {
               </View>
             </Animated.View>
 
-            {expandedItem === item.id && (
+            {expandedItem === item.hotelId && (
               <Animated.View style={[styles.card, styles.cardBack, flipToBackStyle]}>
                 <View style={styles.backContent}>
                   <Text style={styles.backTitle}>{item.name}</Text>
@@ -148,12 +205,16 @@ const Listings = ({ listings, category }: Props) => {
 
   return (
     <View>
-      <FlatList
-        data={loading ? [] : listings}
-        renderItem={renderItem}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      />
+      {error ? (
+        <Text style={styles.errorText}>{error}</Text>
+      ) : (
+        <FlatList
+          data={loading ? [] : destinations}
+          renderItem={renderItem}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        />
+      )}
     </View>
   );
 };
@@ -162,8 +223,8 @@ export default Listings;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    width: width / 2,
-    height: 230,
+    //width: screenWidthwidth / 2,
+    //height: 230,
     marginRight: 20,
     position: "relative",
   },
@@ -250,5 +311,10 @@ const styles = StyleSheet.create({
     color: Colors.white,
     textAlign: "center",
     paddingHorizontal: 10,
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 20,
   },
 });
