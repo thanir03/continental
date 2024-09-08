@@ -49,24 +49,25 @@ const CityDetails = () => {
     const snapPoints = useMemo(() => ['15%', '50%', '90%'], []);
 
     useEffect(() => {
-        const fetchCityData = async () => {
-            try {
-                const response = await fetch(`http://10.0.2.2:5000/city/hotels/${id}`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                setCity(data.city); // Adjust according to your API response structure
-                setDestinations(data.destinations); // Adjust according to your API response structure
-                setLoading(false);
-            } catch (err) {
-                setError('Failed to load data');
-                setLoading(false);
+        fetch(`http://10.0.2.2:5000/city/hotels/${id}`)
+         .then(response => {
+            if(!response.ok){
+                throw new Error('Network response was not ok');
             }
-        };
-
-        fetchCityData();
-    }, [id]);
+            return response.json()
+         })
+         .then(data => {
+            console.log('CityDetails fetched successfully', data);
+            setCity(data.city); 
+            setDestinations(data.destinations);
+            setLoading(false);
+         })
+         .catch(err => {
+            console.error("Error fetching data", err);
+            setError(err);
+            setLoading(false);
+         })
+    }, [id])
 
     // Calculate the date range
      const currentDate = new Date();
@@ -175,12 +176,13 @@ export default CityDetails;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: "#F6F8FD",
     },
     header: {
         justifyContent: 'center',
         alignItems: 'center',
         elevation: 5,
+        zIndex: 10,
     },
     title: {
         fontSize: 24,
@@ -198,7 +200,7 @@ const styles = StyleSheet.create({
     contentContainer: {
         flexGrow: 1,
         paddingHorizontal: 16,
-        backgroundColor: '#F6F8FD',
+        backgroundColor: "#F6F8FD",
         paddingBottom: 30,
     },
     listItem: {
