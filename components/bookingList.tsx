@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import Colors from "@/constants/Colors";
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
+import { Ionicons } from '@expo/vector-icons'; // Add Ionicons
+import { FontAwesome5 } from '@expo/vector-icons'; // Add FontAwesome5
 
 interface Booking {
   bookingId: string;
@@ -21,6 +23,26 @@ export default function BookingList() {
   const [booking, setBooking] = useState<Booking[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const formatDateRange = (arrivalDate: string, departureDate: string) => {
+    const options = { month: 'long', day: 'numeric', year: 'numeric' } as const;
+  
+    const arrival = new Date(arrivalDate);
+    const departure = new Date(departureDate);
+  
+    const arrivalDay = arrival.getDate();
+    const departureDay = departure.getDate();
+    const month = arrival.toLocaleDateString('en-US', { month: 'long' });
+    const year = arrival.getFullYear();
+  
+    if (arrival.getMonth() === departure.getMonth() && arrival.getFullYear() === departure.getFullYear()) {
+      // Same month and year, return in format: October 23-25, 2019
+      return `${month} ${arrivalDay}-${departureDay}, ${year}`;
+    } else {
+      // Different month or year, return full date range: October 23, 2019 - November 5, 2019
+      return `${arrival.toLocaleDateString('en-US', options)} - ${departure.toLocaleDateString('en-US', options)}`;
+    }
+  };
 
   const router = useRouter();
 
@@ -66,10 +88,16 @@ export default function BookingList() {
         <Image source={{ uri: item.image }} style={styles.image} />
         <View style={styles.textContainer}>
           <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.status}>{item.status}</Text>
-          <Text style={styles.dates}>
-            {new Date(item.arrivalDate).toLocaleDateString()} - {new Date(item.departureDate).toLocaleDateString()}
-          </Text>
+          <View style={styles.statusContainer}>
+            <Ionicons name="checkmark-circle" size={14} color={"grey"} style={styles.icon} />
+            <Text style={styles.status}>{item.status}</Text>
+          </View>
+          <View style={styles.datesContainer}>
+            <Ionicons name="calendar-outline" size={14} color={"grey"} style={styles.icon} />
+            <Text style={styles.dates}>
+              {formatDateRange(item.arrivalDate, item.departureDate)}
+            </Text>
+          </View>
         </View>
       </View>
     );
@@ -171,8 +199,8 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width * 0.85, // Adjust width
   },
   image: {
-    width: 60,
-    height: 60,
+    width: 70,
+    height: 70,
     borderRadius: 10,
     marginRight: 10,
   },
@@ -184,13 +212,26 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'black',
   },
+  statusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
   status: {
     fontSize: 14,
-    color: Colors.primaryColor,
+    color: "grey",
+  },
+  datesContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
   },
   dates: {
     fontSize: 14,
-    color: Colors.primaryColor,
+    color: "grey",
+  },
+  icon: {
+    marginRight: 6,
   },
   container: {
     flex: 1,

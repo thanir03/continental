@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {
   Animated,
   Dimensions,
@@ -8,23 +8,24 @@ import {
   StyleSheet,
   Pressable,
   ActivityIndicator,
-  FlatList,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Link } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 
 const { width } = Dimensions.get('screen');
 const ITEM_WIDTH = width * 0.65;
 const ITEM_HEIGHT = 350;
 
 interface City {
-  cityId: string;   // Ensure that id is of type string
+  cityId: string;
   name: string;
   image: string;
 }
 
 const CityCarousel = () => {
-  const [cities, setCities] = React.useState<City[]>([]);  // Use the City interface
+  const [cities, setCities] = React.useState<City[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -38,7 +39,7 @@ const CityCarousel = () => {
         }
         return response.json();
       })
-      .then((data: City[]) => {  // Type the fetched data as an array of City
+      .then((data: City[]) => {
         console.log('City Data fetched successfully:', data);
         setCities(data);
         setLoading(false);
@@ -121,13 +122,22 @@ const CityCarousel = () => {
                     ]}
                   >
                     <Image source={{ uri: item.image }} style={styles.image} />
+                    
+                    {/* Gradient and Blur View */}
                     <View style={styles.textOverlay}>
-                      <Text style={styles.cityName}>{item.name}</Text>
-                      <Text style={styles.ExploreText}>Explore</Text>
+                    <LinearGradient
+                        colors={['transparent', 'rgba(0,0,0,0.8)']}
+                        style={styles.gradientOverlay}
+                      >
+                        <BlurView intensity={300} style={styles.blurView}>
+                          <Text style={styles.cityName}>{item.name}</Text>
+                          <Text style={styles.ExploreText}>Explore</Text>
+                        </BlurView>
+                     </LinearGradient>
                     </View>
                   </Animated.View>
                 </View>
-               </Pressable>
+              </Pressable>
             </Link>
           );
         }}
@@ -167,15 +177,29 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    height: '30%', // Adjust height as needed
+  },
+  gradientOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+  },
+  blurView: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    paddingLeft: 15,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   cityName: {
     fontSize: 18,
     color: '#fff',
     fontWeight: '800',
-    paddingBottom:6,
+    paddingBottom: 6,
   },
   ExploreText: {
     fontSize: 16,
