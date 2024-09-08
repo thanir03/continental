@@ -30,7 +30,7 @@ const ListingDetails = () => {
                     translateY: interpolate(
                         scrollOffset.value,
                         [-IMG_HEIGHT, 0, IMG_HEIGHT],
-                        [-IMG_HEIGHT / 2, 0, IMG_HEIGHT * 0.75]
+                        [-IMG_HEIGHT * 2, 0, IMG_HEIGHT / 2]
                     ),
                 },
                 {
