@@ -162,7 +162,7 @@ const CityDetails = () => {
                         renderItem={({ item }) => <ListItem item={item} />}
                         contentContainerStyle={styles.contentContainer}
                         ListHeaderComponent={() => (
-                            <Text style={styles.resultsCountText}>Number of results: {destinations.length}</Text>
+                            <Text style={styles.resultsCountText}>{destinations.length} Results</Text>
                         )}
                     />
                 </BottomSheet>
@@ -252,8 +252,8 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     resultsCountText: {
-        fontSize: 18,
-        fontWeight: 'bold',
+        fontSize: 16,
+        fontWeight: '500',
         marginVertical: 10,
         textAlign: 'center',
         color: Colors.primaryColor,

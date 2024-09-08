@@ -26,6 +26,7 @@ interface Bookmark {
   image: string;
   location: string;
   price: string;
+  rating: number;
 }
 
 type ViewToken = { item: Bookmark; isViewable: boolean };
@@ -49,11 +50,15 @@ const ListItem = ({ item, viewableItems }: { item: Bookmark; viewableItems: Shar
           <View style={styles.textContainer}>
             <Text style={styles.name}>{item.name}</Text>
             <View style={styles.locationContainer}>
-              <FontAwesome5 name="map-marker-alt" size={14} color={Colors.primaryColor} />
+              <FontAwesome5 name="map-marker-alt" size={14} color={Colors.primaryColor} style={{paddingTop:5}} />
               <Text style={styles.locationText}>{item.location}</Text>
             </View>
-            <Text style={styles.priceText}>${item.price}</Text>
-            <Ionicons name="bookmark-outline" size={20} color={Colors.primaryColor} style={styles.bookmarkIcon} />
+            <View style={styles.ratingContainer}>
+              <Ionicons name="star" size={14} color={Colors.primaryColor} />
+              <Text style={styles.ratingText}> {item.rating}</Text>
+              <Text style={styles.priceText}>${item.price}</Text>
+          </View>
+          <Ionicons name="bookmark" size={20} color={Colors.primaryColor} style={styles.bookmarkIcon} />
           </View>
         </Pressable>
       </Link>
@@ -183,12 +188,24 @@ const styles = StyleSheet.create({
   },
   locationText: {
     fontSize: 14,
+    paddingTop:5,
     marginLeft: 5,
-    color: Colors.primaryColor,
+    color: 'grey',
   },
   priceText: {
-    fontSize: 14,
+    fontSize: 15,
+    fontWeight: 'bold',
     color: Colors.primaryColor,
+    marginLeft: 170,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingTop: 5,
+  },
+  ratingText: {
+    fontSize: 14,
+    color: 'grey',
   },
   bookmarkIcon: {
     position: 'absolute',

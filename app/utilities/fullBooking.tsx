@@ -21,10 +21,28 @@ interface Booking {
 const { height } = Dimensions.get('window');
 type ViewToken = { item: Booking; isViewable: boolean };
 
-// ListItem Component
+const formatDateRange = (arrivalDate: string, departureDate: string) => {
+  const options = { month: 'long', day: 'numeric', year: 'numeric' } as const;
+
+  const arrival = new Date(arrivalDate);
+  const departure = new Date(departureDate);
+
+  const arrivalDay = arrival.getDate();
+  const departureDay = departure.getDate();
+  const month = arrival.toLocaleDateString('en-US', { month: 'long' });
+  const year = arrival.getFullYear();
+
+  if (arrival.getMonth() === departure.getMonth() && arrival.getFullYear() === departure.getFullYear()) {
+    // Same month and year, return in format: October 23-25, 2019
+    return `${month} ${arrivalDay}-${departureDay}, ${year}`;
+  } else {
+    // Different month or year, return full date range: October 23, 2019 - November 5, 2019
+    return `${arrival.toLocaleDateString('en-US', options)} - ${departure.toLocaleDateString('en-US', options)}`;
+  }
+};
+
 const ListItem: React.FC<{ item: Booking; viewableItems: SharedValue<ViewToken[]> }> = React.memo(({ item, viewableItems }) => {
   const rStyle = useAnimatedStyle(() => {
-    // Check if the item is visible
     const isVisible = viewableItems.value.some(vItem => vItem.isViewable && vItem.item.bookingId === item.bookingId);
 
     return {
@@ -42,10 +60,20 @@ const ListItem: React.FC<{ item: Booking; viewableItems: SharedValue<ViewToken[]
       <Image source={{ uri: item.image }} style={styles.image} />
       <View style={styles.textContainer}>
         <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.status}>{item.status}</Text>
-        <Text style={styles.dates}>
-          {new Date(item.arrivalDate).toLocaleDateString()} - {new Date(item.departureDate).toLocaleDateString()}
-        </Text>
+        
+        {/* Status with Icon */}
+        <View style={styles.row}>
+          <Ionicons name="checkmark-circle" size={16} color={"grey"} style={styles.icon} />
+          <Text style={styles.status}>{item.status}</Text>
+        </View>
+
+        {/* Dates with Icon */}
+        <View style={styles.row}>
+          <Feather name="calendar" size={16} color={"grey"} style={styles.icon} />
+          <Text style={styles.dates}>
+             {formatDateRange(item.arrivalDate, item.departureDate)}
+          </Text>
+        </View>
       </View>
     </Animated.View>
   );
@@ -227,6 +255,13 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
   },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    marginRight: 5,
+  },
   name: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -235,11 +270,11 @@ const styles = StyleSheet.create({
   status: {
     fontSize: 14,
     marginVertical: 5,
-    color: Colors.primaryColor,
+    color: "grey",
   },
   dates: {
     fontSize: 14,
-    color: Colors.primaryColor,
+    color: "grey",
   },
   loadingContainer: {
     flex: 1,
