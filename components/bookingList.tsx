@@ -89,11 +89,11 @@ export default function BookingList() {
         <View style={styles.textContainer}>
           <Text style={styles.name}>{item.name}</Text>
           <View style={styles.statusContainer}>
-            <Ionicons name="checkmark-circle" size={14} color={"grey"} style={styles.icon} />
+            <Ionicons name="checkmark-circle" size={14} color={Colors.primaryColor} style={styles.icon} />
             <Text style={styles.status}>{item.status}</Text>
           </View>
           <View style={styles.datesContainer}>
-            <Ionicons name="calendar-outline" size={14} color={"grey"} style={styles.icon} />
+            <Ionicons name="calendar-outline" size={14} color={Colors.primaryColor} style={styles.icon} />
             <Text style={styles.dates}>
               {formatDateRange(item.arrivalDate, item.departureDate)}
             </Text>
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'black',
+    color: '#333',
   },
   statusContainer: {
     flexDirection: 'row',
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   },
   status: {
     fontSize: 14,
-    color: "grey",
+    color: '#00AFF0',
   },
   datesContainer: {
     flexDirection: 'row',
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   },
   dates: {
     fontSize: 14,
-    color: "grey",
+    color: '#00AFF0',
   },
   icon: {
     marginRight: 6,

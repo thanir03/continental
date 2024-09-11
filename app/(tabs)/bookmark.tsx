@@ -57,9 +57,8 @@ const ListItem = ({ item, viewableItems }: { item: Bookmark; viewableItems: Shar
               <Ionicons name="star" size={14} color={Colors.primaryColor} />
               <Text style={styles.ratingText}> {item.rating}</Text>
               <Text style={styles.priceText}>${item.price}</Text>
-          </View>
-          <Ionicons name="bookmark" size={20} color={Colors.primaryColor} style={styles.bookmarkIcon} />
-          </View>
+            </View>
+            </View>
         </Pressable>
       </Link>
     </Animated.View>
@@ -177,9 +176,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   name: {
-    fontSize: 16,
+    marginTop: 5,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: 'black',
+    color : '#333',
   },
   locationContainer: {
     flexDirection: 'row',
@@ -190,28 +190,25 @@ const styles = StyleSheet.create({
     fontSize: 14,
     paddingTop:5,
     marginLeft: 5,
-    color: 'grey',
+    fontWeight: '500',
+    color: "#00AFF0",
   },
   priceText: {
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: 'bold',
     color: Colors.primaryColor,
-    marginLeft: 170,
+    marginLeft: 165,
+    marginBottom:20,
   },
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    paddingTop: 5,
+    marginTop: 5,
   },
   ratingText: {
     fontSize: 14,
-    color: 'grey',
-  },
-  bookmarkIcon: {
-    position: 'absolute',
-    top: 2,
-    right: 2,
-    color: Colors.primaryColor,
+    fontWeight: '500',
+    color: '#00AFF0',
   },
   loadingContainer: {
     flex: 1,

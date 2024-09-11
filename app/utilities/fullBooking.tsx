@@ -34,7 +34,7 @@ const formatDateRange = (arrivalDate: string, departureDate: string) => {
 
   if (arrival.getMonth() === departure.getMonth() && arrival.getFullYear() === departure.getFullYear()) {
     // Same month and year, return in format: October 23-25, 2019
-    return `${month} ${arrivalDay}-${departureDay}, ${year}`;
+    return `${month} ${arrivalDay} - ${departureDay}, ${year}`;
   } else {
     // Different month or year, return full date range: October 23, 2019 - November 5, 2019
     return `${arrival.toLocaleDateString('en-US', options)} - ${departure.toLocaleDateString('en-US', options)}`;
@@ -63,13 +63,13 @@ const ListItem: React.FC<{ item: Booking; viewableItems: SharedValue<ViewToken[]
         
         {/* Status with Icon */}
         <View style={styles.row}>
-          <Ionicons name="checkmark-circle" size={16} color={"grey"} style={styles.icon} />
+          <Ionicons name="checkmark-circle" size={16} color={Colors.primaryColor} style={styles.icon} />
           <Text style={styles.status}>{item.status}</Text>
         </View>
 
         {/* Dates with Icon */}
         <View style={styles.row}>
-          <Feather name="calendar" size={16} color={"grey"} style={styles.icon} />
+          <Feather name="calendar" size={16} color={Colors.primaryColor} style={styles.icon} />
           <Text style={styles.dates}>
              {formatDateRange(item.arrivalDate, item.departureDate)}
           </Text>
@@ -265,16 +265,16 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'black',
+    color: "#333",
   },
   status: {
     fontSize: 14,
     marginVertical: 5,
-    color: "grey",
+    color: '#00AFF0',
   },
   dates: {
     fontSize: 14,
-    color: "grey",
+    color: '#00AFF0',
   },
   loadingContainer: {
     flex: 1,
