@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
-  TouchableWithoutFeedback,
   View,
   ToastAndroid,
   Keyboard,
+  TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams, useRouter } from "expo-router";
@@ -78,11 +78,11 @@ const LoginScreen = () => {
           onChangeText={(e) => setPassword(e)}
           value={password}
         />
-        <TouchableWithoutFeedback onPress={handlePasswordLogin}>
+        <TouchableOpacity onPress={handlePasswordLogin}>
           <View style={style.signInButton}>
             <Text style={style.signInText}>Sign in</Text>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
         {responseErrorMsg && (
           <Text style={{ color: "red", textAlign: "center" }}>
             {responseErrorMsg}

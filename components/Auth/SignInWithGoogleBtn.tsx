@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableWithoutFeedback } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
 
 interface SignInWithGoogleBtnProps {
@@ -7,7 +7,7 @@ interface SignInWithGoogleBtnProps {
 
 const SignInWithGoogleBtn = (props: SignInWithGoogleBtnProps) => {
   return (
-    <TouchableWithoutFeedback onPress={props.onLogin}>
+    <TouchableOpacity onPress={props.onLogin}>
       <View
         style={{
           flexDirection: "row",
@@ -15,7 +15,7 @@ const SignInWithGoogleBtn = (props: SignInWithGoogleBtnProps) => {
           justifyContent: "center",
           marginTop: 20,
           borderColor: "black",
-          backgroundColor: "#f8f9fb",
+          backgroundColor: "white",
           padding: 10,
           paddingVertical: 15,
           borderRadius: 10,
@@ -34,7 +34,7 @@ const SignInWithGoogleBtn = (props: SignInWithGoogleBtnProps) => {
         />
         <Text style={{ fontSize: 15 }}>Continue with Google</Text>
       </View>
-    </TouchableWithoutFeedback>
+    </TouchableOpacity>
   );
 };
 

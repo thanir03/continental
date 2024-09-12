@@ -128,17 +128,43 @@ export default function BookingList() {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Recent Bookings</Text>
-        <TouchableOpacity
+        <View
           style={{
-            backgroundColor: "black",
-            padding: 10,
-            borderRadius: 10,
-            marginTop: 10,
+            padding: 20,
+            justifyContent: "center",
           }}
-          onPress={() => router.push(`/auth?next=/booking`)}
         >
-          <Text style={{ textAlign: "center", color: "white" }}>Login</Text>
-        </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: "bold",
+              marginBottom: 10,
+              textAlign: "center",
+            }}
+          >
+            It looks like you are not logged in.
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              textAlign: "center",
+              marginBottom: 20,
+            }}
+          >
+            To view your recent bookings, please log in to your account.
+          </Text>
+          <TouchableOpacity
+            style={{
+              backgroundColor: "black",
+              padding: 10,
+              borderRadius: 10,
+              marginTop: 10,
+            }}
+            onPress={() => router.push(`/auth?next=/booking`)}
+          >
+            <Text style={{ textAlign: "center", color: "white" }}>Login</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }

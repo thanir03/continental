@@ -10,19 +10,19 @@ import { StripeProvider } from "@stripe/stripe-react-native";
 SplashScreen.preventAutoHideAsync();
 
 export default function _layout() {
-  const [loaded, error] = useFonts({
-    Monserrat: require("@/assets/fonts/Montserrat.ttf"),
-  });
+  // const [loaded, error] = useFonts({
+  //   Monserrat: require("@/assets/fonts/Montserrat.ttf"),
+  // });
 
-  useEffect(() => {
-    if (loaded || error) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded, error]);
+  // useEffect(() => {
+  //   if (loaded || error) {
+  //     SplashScreen.hideAsync();
+  //   }
+  // }, [loaded, error]);
 
-  if (!loaded && !error) {
-    return null;
-  }
+  // if (!loaded && !error) {
+  //   return null;
+  // }
 
   return (
     <SafeAreaProvider>

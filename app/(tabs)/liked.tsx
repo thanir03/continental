@@ -10,6 +10,7 @@ import {
   ImageBackground,
   FlatList,
   StatusBar,
+  TouchableOpacity,
 } from "react-native";
 import Animated, {
   useSharedValue,
@@ -19,10 +20,11 @@ import Animated, {
 } from "react-native-reanimated";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import TextAnimator from "@/TypingAnimations/TextAnimator";
 import { getLikedHotels } from "@/api/Hotel";
 import { useFocusEffect } from "@react-navigation/native";
+import { useAuth } from "@/context/AuthProvider";
 
 interface LikedHotels {
   address: string;
@@ -98,13 +100,17 @@ const ListItem = ({
 // Main Bookmark Component
 const LikeScreen = () => {
   const [bookmarks, setBookmarks] = useState<LikedHotels[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const viewableItems = useSharedValue<ViewToken[]>([]);
+  const { isLoggedIn } = useAuth();
 
   const fn = useCallback(() => {
+    if (!isLoggedIn) return;
+    setLoading(true);
     getLikedHotels()
       .then((data) => {
+        // console.log(data);
         setBookmarks(data as any);
         setLoading(false);
       })
@@ -116,18 +122,11 @@ const LikeScreen = () => {
     return () => {
       console.log("Page unmounted");
     };
-  }, []);
+  }, [isLoggedIn]);
 
   // To rerun the effect when the page is navigated
   useFocusEffect(fn);
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="grey" />
-      </View>
-    );
-  }
   if (error) {
     return (
       <View style={styles.errorContainer}>
@@ -147,20 +146,67 @@ const LikeScreen = () => {
         <Text style={styles.secondaryTitle}>Find your perfect stay</Text>
         <StatusBar hidden />
       </ImageBackground>
-      <FlatList
-        data={bookmarks}
-        renderItem={({ item }) => (
-          <ListItem item={item} viewableItems={viewableItems} />
-        )}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.contentContainer}
-        onViewableItemsChanged={({ viewableItems: vItems }) => {
-          viewableItems.value = vItems.map((vItem) => ({
-            item: vItem.item as LikedHotels,
-            isViewable: vItem.isViewable,
-          }));
-        }}
-      />
+      {loading && (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="grey" />
+        </View>
+      )}
+      {!isLoggedIn && (
+        <View
+          style={{
+            height: Dimensions.get("screen").height * 0.5,
+            padding: 20,
+            justifyContent: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: "bold",
+              marginBottom: 10,
+              textAlign: "center",
+            }}
+          >
+            It looks like you are not logged in.
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              textAlign: "center",
+              marginBottom: 20,
+            }}
+          >
+            To view your liked items, please log in to your account.
+          </Text>
+          <TouchableOpacity
+            style={{
+              backgroundColor: "black",
+              padding: 10,
+              borderRadius: 10,
+              marginTop: 10,
+            }}
+            onPress={() => router.push(`/auth?next=/liked`)}
+          >
+            <Text style={{ textAlign: "center", color: "white" }}>Login</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      {isLoggedIn && bookmarks.length > 0 && (
+        <FlatList
+          data={bookmarks}
+          renderItem={({ item }) => (
+            <ListItem item={item} viewableItems={viewableItems} />
+          )}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={styles.contentContainer}
+          onViewableItemsChanged={({ viewableItems: vItems }) => {
+            viewableItems.value = vItems.map((vItem) => ({
+              item: vItem.item as LikedHotels,
+              isViewable: vItem.isViewable,
+            }));
+          }}
+        />
+      )}
       <View style={styles.bottomSpacer} />
     </View>
   );
@@ -262,7 +308,7 @@ const styles = StyleSheet.create({
     color: Colors.primaryColor,
   },
   loadingContainer: {
-    flex: 1,
+    // flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
