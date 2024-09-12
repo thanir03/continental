@@ -1,27 +1,23 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from "react";
 import {
   StyleSheet,
   View,
   Animated,
   StatusBar,
-  ScrollView,
-  TextInput,
+  Text,
   ImageBackground,
   Dimensions,
   TouchableOpacity,
-  Image,
-  ActivityIndicator,
-} from 'react-native';
-import { Feather, Ionicons } from '@expo/vector-icons';
-import Color from '@/constants/Colors';
-import VideoCarousel from '@/components/VideoCarousel';
+} from "react-native";
+import { Feather, Ionicons } from "@expo/vector-icons";
+import Color from "@/constants/Colors";
+import VideoCarousel from "@/components/VideoCarousel";
 import CategoryButtons from "@/components/CategoryButton";
 import Listings from "@/components/Listings";
 import TextAnimator from "@/TypingAnimations/TextAnimator";
-import PopularCarousel from '@/components/ParallaxCarousel';
-import CitiesCarousel from '@/components/CitiesCarousel';
-import { useRouter } from 'expo-router';
-import { SheetManager } from "react-native-actions-sheet";
+import PopularCarousel from "@/components/ParallaxCarousel";
+import CitiesCarousel from "@/components/CitiesCarousel";
+import { useRouter } from "expo-router";
 
 const { height } = Dimensions.get("window");
 
@@ -58,11 +54,9 @@ export default function HomePage() {
     },
   ];
 
-
   const [category, setCategory] = useState("All");
 
   const onCatChanged = (category: string) => {
-    console.log("Category: ", category);
     setCategory(category);
   };
 
@@ -90,8 +84,8 @@ export default function HomePage() {
   // Calculate translateY for the text and search bar to stop at fixedPosition
   const translateYTextInput = scrollY.interpolate({
     inputRange: [0, fixedPosition],
-    outputRange: [0, 0.58*(headerHeight - minHeaderHeight)], // Reduce the translation amount
-    extrapolate: 'clamp',
+    outputRange: [0, 0.58 * (headerHeight - minHeaderHeight)], // Reduce the translation amount
+    extrapolate: "clamp",
   });
 
   const translateYButton = scrollY.interpolate({
@@ -115,14 +109,14 @@ export default function HomePage() {
         ]}
       >
         <ImageBackground
-          source={require('@/assets/images/Wallpaper.jpg')}
+          source={require("@/assets/images/Wallpaper.jpg")}
           style={[styles.headerBackground]}
           imageStyle={styles.headerImage}
         >
           <Animated.View style={styles.headerTopBar}>
             <TouchableOpacity
               onPress={() => {
-                SheetManager.show("auth");
+                router.push("/booking/1");
               }}
               style={{
                 position: "absolute",
@@ -159,23 +153,22 @@ export default function HomePage() {
               },
             ]}
           >
+            <TextAnimator
+              content="Hello, tell us where to go?"
+              textStyle={styles.headerTitle}
+            />
 
-          <TextAnimator
-             content = "Hello, tell us where to go?"
-             textStyle={styles.headerTitle}
-          />
-            
-         <View style={styles.inputWrapper}>
-            <TouchableOpacity
-              style={styles.input}
-              onPress={() => router.push('/utilities/search')}
-               >
-            <Text style={styles.input}>Where are you going?</Text>
-            <View style={styles.inputIcon}>
-             <Feather color="#fff" name="search" size={20} />
+            <View style={styles.inputWrapper}>
+              <TouchableOpacity
+                style={styles.input}
+                onPress={() => router.push("/search")}
+              >
+                <Text style={styles.input}>Where are you going?</Text>
+                <View style={styles.inputIcon}>
+                  <Feather color="#fff" name="search" size={20} />
+                </View>
+              </TouchableOpacity>
             </View>
-           </TouchableOpacity>
-          </View>
           </Animated.View>
         </ImageBackground>
       </Animated.View>
@@ -189,10 +182,10 @@ export default function HomePage() {
         keyboardShouldPersistTaps="handled"
       >
         <VideoCarousel posts={videos} />
-        <PopularCarousel/>
+        <PopularCarousel />
         <CategoryButtons onCagtegoryChanged={onCatChanged} />
         <Listings category={category} />
-        <CitiesCarousel/>
+        <CitiesCarousel />
         <View style={styles.bottomSpacer} />
       </Animated.ScrollView>
     </View>
@@ -204,7 +197,7 @@ const styles = StyleSheet.create({
   content: {
     padding: 24,
     paddingTop: height * 0.8, // Adjust padding to account for the initial header height
-    backgroundColor: '#F6F8FD',
+    backgroundColor: "#F6F8FD",
   },
   header: {
     position: "absolute",
@@ -213,35 +206,35 @@ const styles = StyleSheet.create({
   },
   headerBackground: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'flex-start', // Align items to the left
+    justifyContent: "center",
+    alignItems: "flex-start", // Align items to the left
     paddingLeft: 8, // Add some padding to the left if needed
     paddingRight: 8, // Add some padding to the left if needed
   },
-  headerImage:{
-    resizeMode: 'cover',
+  headerImage: {
+    resizeMode: "cover",
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
-  headerTitle:{
-    color: '#fff',
+  headerTitle: {
+    color: "#fff",
     fontSize: 26,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     paddingBottom: 6,
   },
 
   inputWrapper: {
-    backgroundColor: 'rgba(255,255,255,0.3)',
+    backgroundColor: "rgba(255,255,255,0.3)",
     height: 48,
     borderRadius: 100,
     borderWidth: 1,
     borderColor: Colors.white,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingTop: 5,
   },
   input: {
-    color: 'white',
+    color: "white",
     paddingHorizontal: 16,
     paddingTop: 2,
     fontSize: 18,
@@ -253,9 +246,9 @@ const styles = StyleSheet.create({
     bottom: 15,
   },
   headerContent: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
     paddingHorizontal: 5,
     paddingVertical: 16,
   },

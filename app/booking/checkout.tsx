@@ -1,3 +1,5 @@
+// Checkout page
+
 import {
   View,
   Text,
@@ -8,18 +10,26 @@ import {
   Linking,
   TouchableOpacity,
   Alert,
+  Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { cancelBooking, getBookingById } from "@/api/Booking";
+import { checkout, getBookingById } from "@/api/Booking";
 import { BookingDetails } from "@/types/data";
 import Colors from "@/constants/Colors";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import dayjs from "dayjs";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import { useStripe } from "@stripe/stripe-react-native";
+import { PasswordUser, useAuth } from "@/context/AuthProvider";
+import { User } from "@react-native-google-signin/google-signin";
 
-const BookingDetailsScreen = () => {
+const CheckoutPage = () => {
   const { id } = useLocalSearchParams();
   const bookingId = parseInt(id as string);
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
+
+  const { user, authType } = useAuth();
 
   const [booking, setBooking] = useState<BookingDetails | null>(null);
   const [loading, setLoading] = useState(true);
@@ -38,6 +48,50 @@ const BookingDetailsScreen = () => {
     });
   }, []);
 
+  const getName = () => {
+    if (!user) return "Guest";
+    if (authType == "oauth_google") {
+      return (user as User).user.familyName!;
+    }
+    return (user as PasswordUser).name!;
+  };
+
+  const initializePaymentSheet = async () => {
+    const { client_secret } = await checkout(bookingId);
+
+    const { error } = await initPaymentSheet({
+      merchantDisplayName: "Continental Inc.",
+      paymentIntentClientSecret: client_secret,
+      defaultBillingDetails: {
+        name: getName(),
+      },
+    });
+    console.log(error);
+  };
+
+  const openPaymentSheet = async () => {
+    console.log("running");
+    const { error } = await presentPaymentSheet();
+    if (error) {
+      router.navigate(`/booking/failure?id=${bookingId}`);
+    } else {
+      console.log("Sucess");
+      router.dismissAll();
+      router.navigate(`/booking/success?id=${bookingId}`);
+    }
+  };
+
+  useEffect(() => {
+    initializePaymentSheet();
+  }, []);
+
+  const openGoogleMaps = () => {
+    const url = `geo:0,0?q=${booking?.h_name + " " + booking?.h_address}`;
+    Linking.openURL(url).catch((err) =>
+      console.error("Error opening Google Maps", err)
+    );
+  };
+
   let ratingText = "";
   const rating = parseFloat(booking?.h_rating ?? "0");
   if (rating >= 8) {
@@ -48,14 +102,7 @@ const BookingDetailsScreen = () => {
     ratingText = "Average";
   }
   return (
-    <View
-      style={{
-        paddingLeft: 10,
-        marginTop: 10,
-        height: Dimensions.get("screen").height,
-        flex: 1,
-      }}
-    >
+    <View style={{ paddingLeft: 10, marginTop: 10 }}>
       <Text
         style={{
           fontSize: 20,
@@ -65,7 +112,7 @@ const BookingDetailsScreen = () => {
           marginBottom: 20,
         }}
       >
-        Booking Details
+        Checkout
       </Text>
       <TouchableWithoutFeedback onPress={router.back}>
         <View
@@ -90,7 +137,7 @@ const BookingDetailsScreen = () => {
         />
       )}
       {booking && (
-        <View style={{ alignItems: "center", gap: 20 }}>
+        <View style={{ alignItems: "center" }}>
           <View
             style={{
               backgroundColor: "#fff",
@@ -101,7 +148,7 @@ const BookingDetailsScreen = () => {
                 height: 2,
               },
               marginLeft: -10,
-              width: Dimensions.get("screen").width * 0.9,
+              width: Dimensions.get("screen").width,
               shadowOpacity: 0.25,
               shadowRadius: 3.84,
               elevation: 5,
@@ -138,6 +185,7 @@ const BookingDetailsScreen = () => {
                   style={{
                     flexDirection: "row",
                     gap: 10,
+                    marginLeft: 10,
                   }}
                 >
                   <Text
@@ -164,48 +212,16 @@ const BookingDetailsScreen = () => {
                     })}
                   </View>
                 </View>
-                <View
+                <Text
                   style={{
-                    alignItems: "center",
-                    flexDirection: "row",
-                    gap: 10,
+                    marginTop: -5,
+                    paddingHorizontal: 5,
+                    fontSize: 20,
+                    color: Colors.primaryColor,
                   }}
                 >
-                  <Ionicons name="checkmark-circle" size={14} color={"grey"} />
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: Colors.primaryColor,
-                    }}
-                  >
-                    {booking.status}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    alignItems: "center",
-                    flexDirection: "row",
-                    gap: 10,
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    RM {booking.total}
-                  </Text>
-                  <Text style={{ color: "gray" }}>|</Text>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {booking.b_no_room} room(s)
-                  </Text>
-                </View>
+                  {ratingText}
+                </Text>
               </View>
             </View>
             <View
@@ -213,36 +229,123 @@ const BookingDetailsScreen = () => {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                padding: 5,
-                marginTop: 7,
+                padding: 10,
               }}
             >
               <View style={{ flexDirection: "row" }}>
                 <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-                  {dayjs(booking.b_start).format("dddd")},{" "}
+                  {dayjs(booking.b_start).format("ddd")},
                 </Text>
                 <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-                  {dayjs(booking.b_start).format("MMM")}{" "}
+                  {" "}
+                  {dayjs(booking.b_start).format("MMM")}
                 </Text>
                 <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                  {" "}
                   {dayjs(booking.b_start).format("DD")}
                 </Text>
               </View>
               <AntDesign name="arrowright" size={24} color="black" />
               <View style={{ flexDirection: "row" }}>
                 <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-                  {dayjs(booking.b_end).format("dddd")},{" "}
+                  {dayjs(booking.b_end).format("ddd")},
                 </Text>
                 <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-                  {dayjs(booking.b_end).format("MMM")}{" "}
+                  {" "}
+                  {dayjs(booking.b_end).format("MMM")}
                 </Text>
                 <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                  {" "}
                   {dayjs(booking.b_end).format("DD")}
                 </Text>
               </View>
             </View>
           </View>
-
+          <View
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: 20,
+              shadowColor: "#6699CC",
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              marginLeft: -10,
+              width: Dimensions.get("screen").width * 0.9,
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
+              padding: 20,
+              marginTop: 10,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 20,
+                  marginBottom: 10,
+                  fontWeight: "bold",
+                }}
+              >
+                Location
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  openGoogleMaps();
+                }}
+              >
+                <Text style={{ color: Colors.primaryColor }}>See Map</Text>
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              {booking.h_lat && booking.h_lng && (
+                <MapView
+                  provider={PROVIDER_GOOGLE}
+                  style={{
+                    height: 100,
+                    width: 100,
+                  }}
+                  scrollEnabled={false}
+                  zoomEnabled={false}
+                  region={{
+                    latitude: parseFloat(booking.h_lat),
+                    longitude: parseFloat(booking.h_lng),
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                  }}
+                >
+                  <Marker
+                    key={"1"}
+                    coordinate={{
+                      latitude: parseFloat(booking.h_lat),
+                      longitude: parseFloat(booking.h_lng),
+                    }}
+                    title={booking.h_name}
+                  />
+                </MapView>
+              )}
+              <Text
+                style={{
+                  padding: 5,
+                  textAlign: "center",
+                  flexShrink: 1,
+                  marginTop: -10,
+                }}
+              >
+                {booking.h_address}
+              </Text>
+            </View>
+          </View>
           <View
             style={{
               backgroundColor: "#fff",
@@ -287,137 +390,36 @@ const BookingDetailsScreen = () => {
               </View>
             </View>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              position: "absolute",
-              width: Dimensions.get("screen").width,
-              backgroundColor: "white",
-              bottom: -250,
-              padding: 30,
-              paddingBottom: 40,
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
+
+          <View style={{ padding: 10 }}>
             <TouchableOpacity
               style={{
                 alignItems: "center",
                 justifyContent: "center",
-                backgroundColor: Colors.primaryColor,
-                width:
-                  booking.status !== "PENDING" && booking.status !== "SOON"
-                    ? "80%"
-                    : "40%",
-                borderRadius: 10,
-                marginLeft:
-                  booking.status !== "PENDING" && booking.status !== "SOON"
-                    ? 35
-                    : 0,
               }}
               onPress={() => {
-                router.push(`/hotel/${booking.h_id}`);
+                openPaymentSheet();
               }}
             >
               <View
                 style={{
+                  borderRadius: 10,
+                  backgroundColor: "#000",
                   padding: 10,
                   paddingVertical: 15,
+                  width: Dimensions.get("screen").width * 0.8,
                 }}
               >
                 <Text
                   style={{
                     textAlign: "center",
-                    color: "white",
-                    fontWeight: "bold",
+                    color: "#fff",
                   }}
                 >
-                  View Hotel
+                  Checkout RM {booking.total}
                 </Text>
               </View>
             </TouchableOpacity>
-
-            {booking.status == "PENDING" && (
-              <TouchableOpacity
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: "black",
-                  width: "55%",
-                  borderRadius: 10,
-                }}
-                onPress={() => {
-                  router.push(`/booking/checkout?id=${bookingId}`);
-                }}
-              >
-                <View
-                  style={{
-                    padding: 10,
-                    paddingVertical: 15,
-                  }}
-                >
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      color: "white",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Checkout RM {booking.total}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            )}
-            {booking.status == "SOON" && (
-              <TouchableOpacity
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: "red",
-                  width: "50%",
-                  borderRadius: 10,
-                }}
-                onPress={() => {
-                  Alert.alert(
-                    "Cancel Booking",
-                    "Are you sure you want to cancel this booking?",
-                    [
-                      {
-                        text: "No",
-                        onPress: () => {},
-                      },
-                      {
-                        text: "Yes",
-                        onPress: () => {
-                          cancelBooking(bookingId).then((res) => {
-                            console.log(res);
-                          });
-                          router.navigate("/booking/trips");
-                        },
-                      },
-                    ],
-                    { cancelable: false }
-                  );
-                }}
-              >
-                <View
-                  style={{
-                    padding: 10,
-                    paddingVertical: 15,
-                  }}
-                >
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      color: "white",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Cancel
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            )}
           </View>
         </View>
       )}
@@ -425,4 +427,4 @@ const BookingDetailsScreen = () => {
   );
 };
 
-export default BookingDetailsScreen;
+export default CheckoutPage;

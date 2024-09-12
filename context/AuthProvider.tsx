@@ -69,11 +69,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const fn = async () => {
-      console.log("----");
+      console.log("AUTH STATE----");
       console.log("Is Logged In", isLoggedIn);
       console.log("user state", user);
       console.log("accessToken", await AsyncStorage.getItem("@access_token"));
-      console.log("user store", await AsyncStorage.getItem("@user"));
       console.log("auth_type store", await AsyncStorage.getItem("@auth_type"));
       console.log("auth_type state", authType);
       console.log("----");

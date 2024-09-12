@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from "react";
 import {
   Dimensions,
   View,
@@ -10,55 +10,84 @@ import {
   ImageBackground,
   FlatList,
   StatusBar,
-} from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, SharedValue } from 'react-native-reanimated';
-import { FontAwesome5, Ionicons } from '@expo/vector-icons';
+} from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  SharedValue,
+} from "react-native-reanimated";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
-import { Link } from 'expo-router';
+import { Link } from "expo-router";
 import TextAnimator from "@/TypingAnimations/TextAnimator";
+import { getLikedHotels } from "@/api/Hotel";
+import { useFocusEffect } from "@react-navigation/native";
 
-interface Bookmark {
-  bookmarkId: string;
-  userId: string;
-  hotelId: string;
-  username: string;
+interface LikedHotels {
+  address: string;
+  agoda_url: string;
+  category: string;
+  city: string;
+  desc: string;
+  id: number;
+  img: string;
+  lat: string;
+  lng: string;
   name: string;
-  image: string;
-  location: string;
-  price: string;
-  rating: number;
+  price: number;
+  rating: string;
 }
 
-type ViewToken = { item: Bookmark; isViewable: boolean };
-const { width, height } = Dimensions.get('window');
+type ViewToken = { item: LikedHotels; isViewable: boolean };
+const { height } = Dimensions.get("window");
 
 // ListItem Component
-const ListItem = ({ item, viewableItems }: { item: Bookmark; viewableItems: SharedValue<ViewToken[]> }) => {
+const ListItem = ({
+  item,
+  viewableItems,
+}: {
+  item: LikedHotels;
+  viewableItems: SharedValue<ViewToken[]>;
+}) => {
   const rStyle = useAnimatedStyle(() => {
-    const isVisible = viewableItems.value.some(vItem => vItem.isViewable && vItem.item.bookmarkId === item.bookmarkId);
+    const isVisible = viewableItems.value.some(
+      (vItem) => vItem.isViewable && vItem.item.id === item.id
+    );
     return {
       opacity: withTiming(isVisible ? 1 : 0),
       transform: [{ scale: withTiming(isVisible ? 1 : 0.5) }],
     };
   }, [viewableItems, item]);
-
+  const nameList = item.name.split(" ");
+  const name = nameList.slice(0, Math.min(nameList.length, 5)).join(" ");
   return (
     <Animated.View style={[styles.item, rStyle]}>
-      <Link href={`/listing/${item.hotelId}`} asChild>
+      <Link href={`/hotel/${item.id}`} asChild>
         <Pressable style={styles.pressable}>
-          <Image source={{ uri: item.image }} style={styles.image} />
+          <Image source={{ uri: item.img }} style={styles.image} />
           <View style={styles.textContainer}>
-            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.name}>{name}</Text>
             <View style={styles.locationContainer}>
-              <FontAwesome5 name="map-marker-alt" size={14} color={Colors.primaryColor} style={{paddingTop:5}} />
-              <Text style={styles.locationText}>{item.location}</Text>
+              <FontAwesome5
+                name="map-marker-alt"
+                size={14}
+                color={Colors.primaryColor}
+                style={{ paddingTop: 5 }}
+              />
+              <Text style={styles.locationText}>{item.city}</Text>
             </View>
             <View style={styles.ratingContainer}>
               <Ionicons name="star" size={14} color={Colors.primaryColor} />
               <Text style={styles.ratingText}> {item.rating}</Text>
-              <Text style={styles.priceText}>${item.price}</Text>
-          </View>
-          <Ionicons name="bookmark" size={20} color={Colors.primaryColor} style={styles.bookmarkIcon} />
+              <Text style={styles.priceText}>RM {item.price}</Text>
+            </View>
+            <Ionicons
+              name="bookmark"
+              size={20}
+              color={Colors.primaryColor}
+              style={styles.bookmarkIcon}
+            />
           </View>
         </Pressable>
       </Link>
@@ -67,49 +96,69 @@ const ListItem = ({ item, viewableItems }: { item: Bookmark; viewableItems: Shar
 };
 
 // Main Bookmark Component
-const Bookmark = () => {
-  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
+const LikeScreen = () => {
+  const [bookmarks, setBookmarks] = useState<LikedHotels[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const viewableItems = useSharedValue<ViewToken[]>([]);
 
-  useEffect(() => {
-    fetch('http://10.0.2.2:5000/bookmark')
-      .then(response => {
-        if (!response.ok) throw new Error('Network Response not OK');
-        return response.json();
-      })
-      .then(data => {
-        setBookmarks(data);
+  const fn = useCallback(() => {
+    getLikedHotels()
+      .then((data) => {
+        setBookmarks(data as any);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         setError(err.message);
         setLoading(false);
       });
+    console.log("Executed");
+    return () => {
+      console.log("Page unmounted");
+    };
   }, []);
 
+  // To rerun the effect when the page is navigated
+  useFocusEffect(fn);
+
   if (loading) {
-    return <View style={styles.loadingContainer}><ActivityIndicator size="large" color="grey" /></View>;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="grey" />
+      </View>
+    );
   }
   if (error) {
-    return <View style={styles.errorContainer}><Text style={styles.errorText}>Error fetching data: {error}</Text></View>;
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>Error fetching data: {error}</Text>
+      </View>
+    );
   }
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={require('@/assets/images/bookmark_wallpaper.jpg')} style={styles.headerBackground} imageStyle={styles.headerImage}>
-        <TextAnimator content="Bookmarks" textStyle={styles.headerTitle} />
-        <Text style = {styles.secondaryTitle}>Find your perfect stay</Text>
+      <ImageBackground
+        source={require("@/assets/images/bookmark_wallpaper.jpg")}
+        style={styles.headerBackground}
+        imageStyle={styles.headerImage}
+      >
+        <TextAnimator content="Liked" textStyle={styles.headerTitle} />
+        <Text style={styles.secondaryTitle}>Find your perfect stay</Text>
         <StatusBar hidden />
       </ImageBackground>
       <FlatList
         data={bookmarks}
-        renderItem={({ item }) => <ListItem item={item} viewableItems={viewableItems} />}
-        keyExtractor={(item) => item.bookmarkId}
+        renderItem={({ item }) => (
+          <ListItem item={item} viewableItems={viewableItems} />
+        )}
+        keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.contentContainer}
         onViewableItemsChanged={({ viewableItems: vItems }) => {
-          viewableItems.value = vItems.map(vItem => ({ item: vItem.item as Bookmark, isViewable: vItem.isViewable }));
+          viewableItems.value = vItems.map((vItem) => ({
+            item: vItem.item as LikedHotels,
+            isViewable: vItem.isViewable,
+          }));
         }}
       />
       <View style={styles.bottomSpacer} />
@@ -121,16 +170,15 @@ const Bookmark = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F6F8FD',
+    backgroundColor: "#F6F8FD",
   },
   headerBackground: {
-    width: '100%',
+    width: "100%",
     height: height * 0.2,
-    justifyContent: 'center',
-    
+    justifyContent: "center",
   },
   headerImage: {
-    resizeMode: 'cover',
+    resizeMode: "cover",
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
   },
@@ -138,33 +186,33 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "600",
     paddingLeft: 20,
-    color: '#fff',
+    color: "#fff",
     marginTop: 50,
-    textAlign: 'center',
+    textAlign: "center",
   },
   secondaryTitle: {
     fontSize: 20,
     fontWeight: "400",
     paddingLeft: 20,
-    color: '#fff',
+    color: "#fff",
   },
   item: {
     height: 100,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 10,
     borderRadius: 10,
     marginVertical: 10,
     marginHorizontal: 20,
-    flexDirection: 'row',
+    flexDirection: "row",
     alignItems: "flex-start",
-    shadowColor: '#6699CC',
+    shadowColor: "#6699CC",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
   },
   pressable: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   image: {
     width: 80,
@@ -174,62 +222,62 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   name: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: 'black',
+    fontWeight: "bold",
+    color: "black",
   },
   locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginVertical: 5,
   },
   locationText: {
     fontSize: 14,
-    paddingTop:5,
+    paddingTop: 5,
     marginLeft: 5,
-    color: 'grey',
+    color: "grey",
   },
   priceText: {
     fontSize: 15,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.primaryColor,
-    marginLeft: 170,
+    marginLeft: 145,
   },
   ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start",
     paddingTop: 5,
   },
   ratingText: {
     fontSize: 14,
-    color: 'grey',
+    color: "grey",
   },
   bookmarkIcon: {
-    position: 'absolute',
+    position: "absolute",
     top: 2,
     right: 2,
     color: Colors.primaryColor,
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   errorContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   errorText: {
     fontSize: 18,
-    color: 'red',
+    color: "red",
   },
   bottomSpacer: {
     height: 20,
-    backgroundColor: '#F6F8FD',
+    backgroundColor: "#F6F8FD",
   },
   contentContainer: {
     paddingTop: 10,
@@ -237,4 +285,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Bookmark;
+export default LikeScreen;

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, Button, Image, View } from "react-native";
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { PasswordUser, useAuth } from "@/context/AuthProvider";
@@ -11,6 +11,7 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView>
       <Link href={"/auth"}>Profile</Link>
+      <Link href={"/utilities/checkout"}>Checkout</Link>
       <Button title="Logout" onPress={onLogout} />
       {isLoggedIn && authType === "oauth_google" && user && (
         <Image
@@ -18,6 +19,7 @@ export default function ProfileScreen() {
           style={{ height: 50, width: 50, borderRadius: 100 }}
         />
       )}
+      <Text>{isLoggedIn ? "Logged In" : "Not Logged In"}</Text>
       {isLoggedIn && authType === "password" && user && (
         <View
           style={{

@@ -10,6 +10,8 @@ import {
   ImageBackground,
   Dimensions,
   TouchableOpacity,
+  ScrollView,
+  TouchableWithoutFeedback,
 } from "react-native";
 import Animated, {
   useSharedValue,
@@ -19,6 +21,8 @@ import Animated, {
 } from "react-native-reanimated";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { getBookingByStatus } from "@/api/Booking";
+import dayjs from "dayjs";
 
 interface Booking {
   bookingId: string;
@@ -36,36 +40,11 @@ interface Booking {
 const { height } = Dimensions.get("window");
 type ViewToken = { item: Booking; isViewable: boolean };
 
-const formatDateRange = (arrivalDate: string, departureDate: string) => {
-  const options = { month: "long", day: "numeric", year: "numeric" } as const;
-
-  const arrival = new Date(arrivalDate);
-  const departure = new Date(departureDate);
-
-  const arrivalDay = arrival.getDate();
-  const departureDay = departure.getDate();
-  const month = arrival.toLocaleDateString("en-US", { month: "long" });
-  const year = arrival.getFullYear();
-
-  if (
-    arrival.getMonth() === departure.getMonth() &&
-    arrival.getFullYear() === departure.getFullYear()
-  ) {
-    // Same month and year, return in format: October 23-25, 2019
-    return `${month} ${arrivalDay}-${departureDay}, ${year}`;
-  } else {
-    // Different month or year, return full date range: October 23, 2019 - November 5, 2019
-    return `${arrival.toLocaleDateString(
-      "en-US",
-      options
-    )} - ${departure.toLocaleDateString("en-US", options)}`;
-  }
-};
-
 const ListItem: React.FC<{
-  item: Booking;
+  item: any;
   viewableItems: SharedValue<ViewToken[]>;
 }> = React.memo(({ item, viewableItems }) => {
+  const router = useRouter();
   const rStyle = useAnimatedStyle(() => {
     const isVisible = viewableItems.value.some(
       (vItem) => vItem.isViewable && vItem.item.bookingId === item.bookingId
@@ -82,66 +61,76 @@ const ListItem: React.FC<{
   }, [viewableItems, item]);
 
   return (
-    <Animated.View style={[styles.item, rStyle]}>
-      <Image source={{ uri: item.image }} style={styles.image} />
-      <View style={styles.textContainer}>
-        <Text style={styles.name}>{item.name}</Text>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        router.push(`/booking/${item.bookingId}`);
+      }}
+    >
+      <Animated.View style={[styles.item, rStyle]}>
+        <Image source={{ uri: item.hotel_image }} style={styles.image} />
+        <View style={styles.textContainer}>
+          <Text style={styles.name}>{item.hotel_name}</Text>
+          <View style={styles.row}>
+            <Ionicons
+              name="checkmark-circle"
+              size={16}
+              color={"grey"}
+              style={styles.icon}
+            />
+            <Text style={styles.status}>{item.status}</Text>
+          </View>
 
-        {/* Status with Icon */}
-        <View style={styles.row}>
-          <Ionicons
-            name="checkmark-circle"
-            size={16}
-            color={"grey"}
-            style={styles.icon}
-          />
-          <Text style={styles.status}>{item.status}</Text>
+          {/* Dates with Icon */}
+          <View style={styles.row}>
+            <Feather
+              name="calendar"
+              size={16}
+              color={"grey"}
+              style={styles.icon}
+            />
+            <Text style={styles.dates}>
+              {dayjs(item.start_date).format("MMM D, YYYY")}
+            </Text>
+            <Text style={styles.dates}>TO</Text>
+            <Text style={styles.dates}>
+              {dayjs(item.end_date).format("MMM D, YYYY")}
+            </Text>
+          </View>
         </View>
-
-        {/* Dates with Icon */}
-        <View style={styles.row}>
-          <Feather
-            name="calendar"
-            size={16}
-            color={"grey"}
-            style={styles.icon}
-          />
-          <Text style={styles.dates}>
-            {formatDateRange(item.arrivalDate, item.departureDate)}
-          </Text>
-        </View>
-      </View>
-    </Animated.View>
+      </Animated.View>
+    </TouchableWithoutFeedback>
   );
 });
 
-// BookingList Component
-export default function FullBookingList() {
+const statusOptions: {
+  title: string;
+  option: "ALL" | "PENDING" | "SOON" | "CURRENT" | "PAST" | "CANCELLED";
+}[] = [
+  { title: "All", option: "ALL" },
+  { title: "Pending", option: "PENDING" },
+  { title: "Soon", option: "SOON" },
+  { title: "Current", option: "CURRENT" },
+  { title: "Past", option: "PAST" },
+  { title: "Cancelled", option: "CANCELLED" },
+];
+
+export default function TripsScreen() {
   const [booking, setBooking] = useState<Booking[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [status, setStatus] = useState<
+    "ALL" | "PENDING" | "SOON" | "CURRENT" | "PAST" | "CANCELLED"
+  >("ALL");
   const viewableItems = useSharedValue<ViewToken[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    fetch("http://10.0.2.2:5000/booking/join")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network Response not OK");
-        }
-        return response.json();
-      })
-      .then((data: Booking[]) => {
-        setBooking(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching data:", err);
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
+    getBookingByStatus(status).then((data: Booking[]) => {
+      console.log(data);
+      setBooking(data);
+      setLoading(false);
+    });
+  }, [status]);
 
   if (loading) {
     return (
@@ -172,38 +161,65 @@ export default function FullBookingList() {
         >
           <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.title}>Booking List</Text>
+        <Text style={styles.title}>Your Booking List</Text>
 
-        <View style={[styles.buttonContainer]}>
-          <TouchableOpacity style={[styles.button]}>
-            <Text style={styles.buttonText}>All</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Current</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Pending</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Past</Text>
-          </TouchableOpacity>
-        </View>
+        <ScrollView horizontal={true} style={[styles.buttonContainer]}>
+          {statusOptions.map((item) => {
+            return (
+              <TouchableOpacity
+                key={item.option}
+                style={[
+                  styles.button,
+                  {
+                    backgroundColor:
+                      status === item.option ? "white" : "transparent",
+                  },
+                ]}
+                onPress={() => setStatus(item.option)}
+              >
+                <Text
+                  style={[
+                    styles.buttonText,
+                    { color: status === item.option ? "black" : "white" },
+                  ]}
+                >
+                  {item.title}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
       </ImageBackground>
+
       <StatusBar hidden />
-      <FlatList
-        data={booking}
-        contentContainerStyle={styles.contentContainer}
-        onViewableItemsChanged={({ viewableItems: vItems }) => {
-          viewableItems.value = vItems.map((vItem) => ({
-            item: vItem.item as Booking,
-            isViewable: vItem.isViewable,
-          }));
-        }}
-        renderItem={({ item }) => (
-          <ListItem item={item} viewableItems={viewableItems} />
-        )}
-        keyExtractor={(item) => item.bookingId}
-      />
+      {booking.length > 0 && (
+        <FlatList
+          data={booking}
+          contentContainerStyle={styles.contentContainer}
+          onViewableItemsChanged={({ viewableItems: vItems }) => {
+            viewableItems.value = vItems.map((vItem) => ({
+              item: vItem.item as Booking,
+              isViewable: vItem.isViewable,
+            }));
+          }}
+          renderItem={({ item }) => (
+            <ListItem item={item} viewableItems={viewableItems} />
+          )}
+          keyExtractor={(item) => item.bookingId}
+        />
+      )}
+      {booking.length === 0 && (
+        <View
+          style={{
+            height: Dimensions.get("screen").height * 0.7,
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 10,
+          }}
+        >
+          <Text style={{ fontSize: 20, fontWeight: "bold" }}>No Bookings</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -220,8 +236,8 @@ const styles = StyleSheet.create({
   },
   headerImage: {
     resizeMode: "cover",
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    // borderBottomLeftRadius: 20,
+    // borderBottomRightRadius: 20,
   },
   title: {
     width: 300,
@@ -240,7 +256,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     position: "absolute",
     left: 0,
     bottom: 5,
@@ -298,6 +314,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 5,
   },
   icon: {
     marginRight: 5,

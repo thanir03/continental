@@ -1,28 +1,24 @@
 const destinationCategories = [
-    {
-      title: "All",
-      iconName: "hiking"
-    },
-    {
-      title: "Beaches",
-      iconName: "beach"
-    },
-    {
-      title: "Mountains",
-      iconName: "terrain"
-    },
-    {
-      title: "Cities",
-      iconName: "city"
-    },
-    {
-      title: "Forests",
-      iconName: "tree"
-    },
-    {
-      title: "Lakes",
-      iconName: "swim"
-    }
-  ];
-  
-  export default destinationCategories;
+  {
+    title: "All",
+    iconName: "hiking",
+  },
+  {
+    title: "Deluxe",
+    iconName: "beach",
+  },
+  {
+    title: "Luxury",
+    iconName: "terrain",
+  },
+  {
+    title: "Cozy",
+    iconName: "city",
+  },
+  {
+    title: "Longer Stays",
+    iconName: "tree",
+  },
+];
+
+export default destinationCategories;

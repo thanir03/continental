@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -29,7 +29,13 @@ const RegisterScreen = () => {
   const [nameErrorMsg, setNameErrorMsg] = useState("");
 
   const [responseErrorMsg, setResponseErrorMsg] = useState("");
-  const { onLoginWithGoogle, onRegisterWithPassword } = useAuth();
+  const { onLoginWithGoogle, onRegisterWithPassword, isLoggedIn } = useAuth();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.back();
+    }
+  }, []);
 
   const handleRegisterAccount = async () => {
     Keyboard.dismiss();
@@ -51,7 +57,6 @@ const RegisterScreen = () => {
       setEmailErrorMsg("");
     }
     if (name.length < 4) {
-      console.log("Executed");
       isValid = false;
       setNameErrorMsg("Name length must be more than 4 characters");
     } else {
@@ -81,7 +86,6 @@ const RegisterScreen = () => {
       } else {
         setResponseErrorMsg(response.message);
       }
-      console.log(response);
     } catch (error) {
       console.log(error);
     }

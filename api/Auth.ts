@@ -3,7 +3,6 @@ import { url } from "@/api/config";
 
 const registerUser = async (email: string, name: string, password: string) => {
   if (!email || !name || !password) {
-    console.log("here");
     return {
       message: "Invalid fields",
       status: false,
@@ -63,9 +62,15 @@ const googleOauthAuthentication = async (email: string, name: string) => {
 };
 const validateAccessToken = async (accessToken: string) => {
   try {
-    const response = await axios.post(`${url}/auth/validate-token`, {
-      access_token: accessToken,
-    });
+    const response = await axios.post(
+      `${url}/auth/validate-token`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     const axiosError = error as AxiosError<any>;

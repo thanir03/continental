@@ -20,7 +20,12 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.continental.hotel"
+      "package": "com.continental.hotel",
+      "config": {
+        "googleMaps": {
+            "apiKey": "AIzaSyCOHQ2j4CKfjOsuUCcb4UgAYOWIKwk3vSo"
+        }
+      }
     },
     "web": {
       "bundler": "metro",

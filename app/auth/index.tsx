@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,7 +8,7 @@ import {
   Keyboard,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, useLocalSearchParams, useRouter } from "expo-router";
 import SignInWithGoogleBtn from "@/components/Auth/SignInWithGoogleBtn";
 import EmailInputField from "@/components/Auth/EmailInputField";
 import PasswordInputField from "@/components/Auth/PasswordInputField";
@@ -20,7 +20,15 @@ const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [responseErrorMsg, setResponseErrorMsg] = useState("");
-  const { onLoginWithGoogle, onLoginWithPassword } = useAuth();
+  const { onLoginWithGoogle, onLoginWithPassword, isLoggedIn } = useAuth();
+  const params = useLocalSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.back();
+    }
+  }, []);
 
   const handlePasswordLogin = async () => {
     Keyboard.dismiss();
@@ -44,15 +52,17 @@ const LoginScreen = () => {
     Keyboard.dismiss();
     try {
       const response = await onLoginWithGoogle();
-      console.log(response);
       if (response.status == true) {
         setTimeout(() => {
-          router.navigate("/");
+          if (params.next) {
+            router.navigate(params.next as any);
+          } else {
+            router.navigate("/");
+          }
         }, 1000);
       } else {
         setResponseErrorMsg(response.message);
       }
-      console.log(response);
     } catch (error) {
       console.log(error);
     }
