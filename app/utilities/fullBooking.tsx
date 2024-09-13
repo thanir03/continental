@@ -61,13 +61,11 @@ const ListItem: React.FC<{ item: Booking; viewableItems: SharedValue<ViewToken[]
       <View style={styles.textContainer}>
         <Text style={styles.name}>{item.name}</Text>
         
-        {/* Status with Icon */}
         <View style={styles.row}>
           <Ionicons name="checkmark-circle" size={16} color={Colors.primaryColor} style={styles.icon} />
           <Text style={styles.status}>{item.status}</Text>
         </View>
 
-        {/* Dates with Icon */}
         <View style={styles.row}>
           <Feather name="calendar" size={16} color={Colors.primaryColor} style={styles.icon} />
           <Text style={styles.dates}>

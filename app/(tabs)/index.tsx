@@ -21,6 +21,7 @@ import Listings from "@/components/Listings";
 import TextAnimator from "@/TypingAnimations/TextAnimator";
 import PopularCarousel from '@/components/ParallaxCarousel';
 import CitiesCarousel from '@/components/CitiesCarousel';
+import ChatButton from '@/components/ChatButton';
 import { useRouter } from 'expo-router';
 
 const { height } = Dimensions.get('window');
@@ -157,6 +158,7 @@ export default function Page() {
         <CategoryButtons onCagtegoryChanged={onCatChanged} />
         <Listings category={category} />
         <CitiesCarousel/>
+        <ChatButton/>
         <View style={styles.bottomSpacer} />
       </Animated.ScrollView>
     </View>

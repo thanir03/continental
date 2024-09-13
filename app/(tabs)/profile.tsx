@@ -63,7 +63,7 @@ export default function Profile() {
         <TouchableOpacity style={styles.accountButton}>
           <Text style={styles.buttonText}>Login / Register</Text>
         </TouchableOpacity>
-        <View style={{backgroundColor: '#F9FCFF', padding: 20}}/>
+        <View style={{backgroundColor: '#F9FCFF', padding: 15}}/>
         <TouchableOpacity style={styles.logoutButton}>
           <Text style={styles.buttonText}>Log Out</Text>
         </TouchableOpacity>
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginTop: 10,
     borderBottomWidth: 1,
-    borderColor: 'grey',
+    borderColor: 'light-grey',
   },
   bottomSpacer: {
     height: 80,

@@ -2,7 +2,6 @@ import { StyleSheet, Text, View, FlatList, ActivityIndicator, StatusBar, Image, 
 import React, { useEffect, useState } from 'react';
 import Colors from "@/constants/Colors";
 import { useRouter } from 'expo-router';
-import Toast from 'react-native-toast-message';
 import { Ionicons } from '@expo/vector-icons'; // Add Ionicons
 import { FontAwesome5 } from '@expo/vector-icons'; // Add FontAwesome5
 
