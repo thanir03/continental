@@ -98,7 +98,7 @@ const ListItem = ({
 };
 
 // Main Bookmark Component
-const LikeScreen = () => {
+const BookmarkScreen = () => {
   const [bookmarks, setBookmarks] = useState<LikedHotels[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -110,7 +110,6 @@ const LikeScreen = () => {
     setLoading(true);
     getLikedHotels()
       .then((data) => {
-        // console.log(data);
         setBookmarks(data as any);
         setLoading(false);
       })
@@ -118,10 +117,7 @@ const LikeScreen = () => {
         setError(err.message);
         setLoading(false);
       });
-    console.log("Executed");
-    return () => {
-      console.log("Page unmounted");
-    };
+    return () => {};
   }, [isLoggedIn]);
 
   // To rerun the effect when the page is navigated
@@ -206,6 +202,39 @@ const LikeScreen = () => {
             }));
           }}
         />
+      )}
+      {isLoggedIn && bookmarks.length == 0 && (
+        <View
+          style={{
+            height: Dimensions.get("screen").height * 0.5,
+            padding: 20,
+            justifyContent: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: "bold",
+              marginBottom: 10,
+              textAlign: "center",
+            }}
+          >
+            No Liked Hotels
+          </Text>
+          <TouchableOpacity
+            style={{
+              backgroundColor: "black",
+              padding: 10,
+              borderRadius: 10,
+              marginTop: 10,
+            }}
+            onPress={() => router.push(`/booking`)}
+          >
+            <Text style={{ textAlign: "center", color: "white" }}>
+              View Hotels
+            </Text>
+          </TouchableOpacity>
+        </View>
       )}
       <View style={styles.bottomSpacer} />
     </View>
@@ -331,4 +360,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LikeScreen;
+export default BookmarkScreen;

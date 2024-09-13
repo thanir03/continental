@@ -43,7 +43,6 @@ const getBookingByStatus = async (status: string): Promise<any> => {
       `/book/details?status=${status}`
     );
     console.log(response.data);
-    console.log("No error");
     return response.data;
   } catch (error) {
     console.log((error as AxiosError).response?.data);

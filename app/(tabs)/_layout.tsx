@@ -11,7 +11,7 @@ const _layout = () => {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          position: 'absolute',
+          position: "absolute",
           height: 60,
           bottom: 10,
           paddingHorizontal: 10,
@@ -20,13 +20,13 @@ const _layout = () => {
           elevation: 10,
           backgroundColor: "#fff", // #2D3037
           borderRadius: 40,
-          alignItems: 'center',
-          justifyContent: 'center',
-          shadowColor: '#6699CC',
+          alignItems: "center",
+          justifyContent: "center",
+          shadowColor: "#6699CC",
           shadowOffset: {
-             width: 0,
-             height: 2,
-           },
+            width: 0,
+            height: 2,
+          },
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
           zIndex: 1,
@@ -43,8 +43,8 @@ const _layout = () => {
               }}
             >
               <Ionicons
-                name={focused ? 'home' : 'home-outline'}
-                color={focused ? Colors.primaryColor : 'gray'} // Active icon is white, inactive is gray
+                name={focused ? "home" : "home-outline"}
+                color={focused ? Colors.primaryColor : "gray"} // Active icon is white, inactive is gray
                 size={24}
                 style={
                   focused
@@ -70,8 +70,8 @@ const _layout = () => {
               }}
             >
               <Ionicons
-                name={focused ? 'calendar' : 'calendar-outline'}
-                color={focused ? Colors.primaryColor : 'gray'} // Active icon is white, inactive is gray
+                name={focused ? "calendar" : "calendar-outline"}
+                color={focused ? Colors.primaryColor : "gray"} // Active icon is white, inactive is gray
                 size={24}
                 style={
                   focused
@@ -97,8 +97,8 @@ const _layout = () => {
               }}
             >
               <Ionicons
-                name={focused ? 'chatbubble' : 'chatbubble-outline'}
-                color={focused ? Colors.primaryColor  : 'gray'} // Active icon is white, inactive is gray
+                name={focused ? "chatbubble" : "chatbubble-outline"}
+                color={focused ? Colors.primaryColor : "gray"} // Active icon is white, inactive is gray
                 size={24}
                 style={
                   focused
@@ -115,7 +115,7 @@ const _layout = () => {
         }}
       />
       <Tabs.Screen
-        name="liked"
+        name="bookmark"
         options={{
           tabBarIcon: ({ focused }) => (
             <View
@@ -124,8 +124,8 @@ const _layout = () => {
               }}
             >
               <Ionicons
-                name={focused ? 'bookmark' : 'bookmark-outline'}
-                color={focused ? Colors.primaryColor  : 'gray'} // Active icon is white, inactive is gray
+                name={focused ? "bookmark" : "bookmark-outline"}
+                color={focused ? Colors.primaryColor : "gray"} // Active icon is white, inactive is gray
                 size={24}
                 style={
                   focused
@@ -151,8 +151,8 @@ const _layout = () => {
               }}
             >
               <Ionicons
-                name={focused ? 'person' : 'person-outline'}
-                color={focused ? Colors.primaryColor  : 'gray'} // Active icon is white, inactive is gray
+                name={focused ? "person" : "person-outline"}
+                color={focused ? Colors.primaryColor : "gray"} // Active icon is white, inactive is gray
                 size={24}
                 style={
                   focused

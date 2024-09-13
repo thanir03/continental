@@ -293,7 +293,7 @@ const BookingDetailsScreen = () => {
               position: "absolute",
               width: Dimensions.get("screen").width,
               backgroundColor: "white",
-              bottom: -250,
+              bottom: -200,
               padding: 30,
               paddingBottom: 40,
               justifyContent: "space-between",

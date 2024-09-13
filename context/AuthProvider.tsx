@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import { GoogleSignin, User } from "@react-native-google-signin/google-signin";
 import {
@@ -9,6 +9,7 @@ import {
 } from "@/api/Auth";
 import { ToastAndroid } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNetwork } from "./NetProvider";
 
 GoogleSignin.configure({
   webClientId: process.env.EXPO_PUBLIC_GOOGLE_OAUTH_WEB_CLIENT,
@@ -28,18 +29,29 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [authType, setAuthType] = useState<"" | "password" | "oauth_google">(
     ""
   );
+  const { isOnline } = useNetwork();
 
-  const checkIfUserIsLoggedIn = async () => {
+  const checkIfUserIsLoggedIn = useCallback(async () => {
     try {
       const user = await AsyncStorage.getItem("@user");
+
       if (!user) {
+        // user not logged in
         handleLogout();
         return;
       }
       const authMethod = (await AsyncStorage.getItem("@auth_type"))!;
       const accessToken = (await AsyncStorage.getItem("@access_token"))!;
+      const email = (await AsyncStorage.getItem("@email"))!;
+
+      if (!isOnline && user) {
+        // user have previously logged in but is offline
+        _onLogin(authMethod, accessToken, email, JSON.parse(user));
+      }
+
       let oauthUserInfo;
       if (authMethod === "oauth_google") {
+        // previously logged with google account
         const hasLoggedInBefore = GoogleSignin.hasPreviousSignIn();
         if (!hasLoggedInBefore) {
           handleLogout();
@@ -61,7 +73,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           : response.user ?? JSON.parse(user)
       );
     } catch (error) {}
-  };
+  }, [isOnline]);
 
   useEffect(() => {
     checkIfUserIsLoggedIn();
@@ -69,13 +81,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const fn = async () => {
-      console.log("AUTH STATE----");
-      console.log("Is Logged In", isLoggedIn);
-      console.log("user state", user);
-      console.log("accessToken", await AsyncStorage.getItem("@access_token"));
-      console.log("auth_type store", await AsyncStorage.getItem("@auth_type"));
-      console.log("auth_type state", authType);
-      console.log("----");
+      // console.log("AUTH STATE----");
+      // console.log("Is Logged In", isLoggedIn);
+      // console.log("user state", user);
+      // console.log("accessToken", await AsyncStorage.getItem("@access_token"));
+      // console.log("auth_type store", await AsyncStorage.getItem("@auth_type"));
+      // console.log("auth_type state", authType);
+      // console.log("----");
     };
     fn();
   }, [isLoggedIn, user, authType]);
@@ -129,6 +141,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     AsyncStorage.setItem("@auth_type", auth_type);
     AsyncStorage.setItem("@access_token", accessToken);
     AsyncStorage.setItem("@user", JSON.stringify(user));
+    AsyncStorage.setItem("@email", email);
     setUser(user);
     setIsLoggedIn(true);
     setAccessToken(accessToken);
