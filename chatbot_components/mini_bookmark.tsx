@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, FlatList, Pressable, Dimensions } from 'react-native';
 import Colors from "@/constants/Colors";
+import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 
 interface Bookmark {
   bookmarkId: string;
@@ -57,10 +58,14 @@ const ListItem = ({ item }: { item: Bookmark }) => {
       <View style={styles.textContainer}>
         <Text style={styles.name}>{item.name}</Text>
         <View style={styles.locationContainer}>
+          <Ionicons name="location-outline" size={14} color={Colors.primaryColor} />
           <Text style={styles.locationText}>{item.location}</Text>
         </View>
         <View style={styles.ratingContainer}>
-          <Text style={styles.ratingText}>{item.rating}</Text>
+          <View style={{flex:1, flexDirection: 'row'}}>
+           <Ionicons name="star-outline" size={14} color={Colors.primaryColor} style={{marginHorizontal:3}} />
+           <Text style={styles.ratingText}>{item.rating}</Text>
+          </View>
           <Text style={styles.priceText}>${item.price}</Text>
         </View>
       </View>
@@ -84,9 +89,10 @@ const MiniBookmarkList = () => {
 const styles = StyleSheet.create({
   contentContainer: {
     backgroundColor: '#F6F8FD',
+    paddingVertical: 5,
   },
   item: {
-    width: Dimensions.get('window').width * 0.75, // Smaller width for each item
+    width: Dimensions.get('window').width * 0.75,
     backgroundColor: '#fff',
     padding: 5,
     borderRadius: 10,
@@ -111,30 +117,34 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: Colors.primaryColor,
   },
   locationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 7,
   },
   locationText: {
     fontSize: 12,
     color: "#00AFF0",
-    marginLeft: 5,
+    fontWeight: '600',
   },
   ratingContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-between', // Align price and rating with space between
     alignItems: 'center',
+    marginTop: 3,
   },
   ratingText: {
     fontSize: 12,
-    color: '#00AFF0',
+    fontWeight: '600',
+    color: "#00AFF0",
   },
   priceText: {
     fontSize: 14,
     fontWeight: 'bold',
     color: Colors.primaryColor,
-    marginLeft: 10,
+    marginVertical: 5,
   },
 });
 

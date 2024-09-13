@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet, Text, View, Pressable, Image, Dimensions } from 'react-native';
 import { ListingType } from '@/types/listingType';
 import Colors from '@/constants/Colors';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 
 type Props = {

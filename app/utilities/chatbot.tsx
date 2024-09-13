@@ -20,9 +20,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import MiniListings from '@/chatbot_components/mini_listing';
 import MiniBookingList from '@/chatbot_components/mini_booking';
 import MiniBookmarkList from '@/chatbot_components/mini_bookmark';
+import MiniRoomList from '@/chatbot_components/mini_roomList';
 
 interface CustomMessage extends IMessage {
-  componentType?: 'ComponentA' | 'ComponentB' | 'ComponentC';
+  componentType?: 'bookingListComponent' | 'hotelListComponent' | 'bookmarkComponent' | 'roomListComponent';
 }
 
 const { height } = Dimensions.get('window');
@@ -42,7 +43,7 @@ const ChatScreen = () => {
           name: 'Chatbot',
           avatar: require('@/assets/images/hu-tao-profile.png'),
         },
-        componentType: 'ComponentA',
+        componentType: 'bookingListComponent',
       },
       {
         _id: 2,
@@ -53,8 +54,7 @@ const ChatScreen = () => {
           name: 'Chatbot',
           avatar: require('@/assets/images/hu-tao-profile.png'),
         },
-        componentType: 'ComponentB',
-        
+        componentType: 'hotelListComponent',
       },
       {
         _id: 3,
@@ -64,38 +64,44 @@ const ChatScreen = () => {
           _id: 2,
           name: 'Chatbot',
           avatar: require('@/assets/images/hu-tao-profile.png'),
-        },        
+        },
+        componentType: 'roomListComponent',
       },
       {
         _id: 4,
-        text: 'components C!',
+        text: 'Bookmark component!',
         createdAt: new Date(),
         user: {
           _id: 2,
           name: 'Chatbot',
           avatar: require('@/assets/images/hu-tao-profile.png'),
-        },  
-        componentType: 'ComponentC',      
+        },
+        componentType: 'bookmarkComponent',
       },
-
     ]);
   }, []);
 
-  const CustomComponentA = () => (
-    <View style={styles.componentA}>
-      <MiniBookingList/>
+  const BookingListComponent = () => (
+    <View style={styles.bookingListComponent}>
+      <MiniBookingList />
     </View>
   );
 
-  const CustomComponentB = () => (
-    <View style={styles.componentB}>
+  const HotelListComponent = () => (
+    <View style={styles.hotelListComponent}>
       <MiniListings category="Mountains" />
     </View>
   );
 
-  const CustomComponentC = () => (
-    <View style={styles.componentC}>
-      <MiniBookmarkList/>
+  const BookmarkComponent = () => (
+    <View style={styles.bookmarkComponent}>
+      <MiniBookmarkList />
+    </View>
+  );
+
+  const RoomListComponent = () => (
+    <View style={styles.roomListComponent}>
+      <MiniRoomList />
     </View>
   );
 
@@ -104,12 +110,14 @@ const ChatScreen = () => {
 
     if (currentMessage.componentType) {
       switch (currentMessage.componentType) {
-        case 'ComponentA':
-          return <CustomComponentA />;
-        case 'ComponentB':
-          return <CustomComponentB />;
-        case 'ComponentC':
-          return <CustomComponentC />;
+        case 'bookingListComponent':
+          return <BookingListComponent />;
+        case 'hotelListComponent':
+          return <HotelListComponent />;
+        case 'bookmarkComponent':
+          return <BookmarkComponent />;
+        case 'roomListComponent':
+          return <RoomListComponent />;
         default:
           return null;
       }
@@ -187,20 +195,20 @@ const ChatScreen = () => {
 
       {/* Chat Section */}
       <View style={styles.chatContainer}>
-      <ImageBackground
-        source={require('@/assets/images/Chatbot-wallpaper.jpg')}
-        style={styles.background}
-      >
-        <GiftedChat
-          messages={messages}
-          onSend={(newMessages) => setMessages(GiftedChat.append(messages, newMessages))}
-          user={{ _id: 1 }}
-          renderCustomView={renderMessage}
-          renderBubble={renderBubble}
-          scrollToBottom={true}
-          inverted={false}
-        />
-     </ImageBackground>
+        <ImageBackground
+          source={require('@/assets/images/Chatbot-wallpaper.jpg')}
+          style={styles.background}
+        >
+          <GiftedChat
+            messages={messages}
+            onSend={(newMessages) => setMessages(GiftedChat.append(messages, newMessages))}
+            user={{ _id: 1 }}
+            renderCustomView={renderMessage}
+            renderBubble={renderBubble}
+            scrollToBottom={true}
+            inverted={false}
+          />
+        </ImageBackground>
       </View>
     </View>
   );
@@ -232,55 +240,70 @@ const styles = StyleSheet.create({
     top: 30,
     zIndex: 100,
   },
-  background:{
-    flex:1,
+  background: {
+    flex: 1,
     resizeMode: 'cover',
   },
   chatContainer: {
     flex: 1,
   },
-  componentA: {
+  bookingListComponent: {
     padding: 5,
     borderRadius: 10,
-    width:250,
+    width: 300,
     height: 130,
     backgroundColor: 'white',
     margin: 5,
     shadowColor: '#6699CC',
     shadowOffset: {
-       width: 0,
-       height: 2,
-   },
+      width: 0,
+      height: 2,
+    },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
   },
-  componentB: {
-    padding:5,
-    borderRadius: 10,
-    width:240,
-    backgroundColor: 'white',
-    margin: 5,
-    shadowColor: '#6699CC',
-    shadowOffset: {
-       width: 0,
-       height: 2,
-   },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  componentC: {
+  hotelListComponent: {
     padding: 5,
     borderRadius: 10,
-    width:300,
+    width: 240,
     backgroundColor: 'white',
     margin: 5,
     shadowColor: '#6699CC',
     shadowOffset: {
-       width: 0,
-       height: 2,
-   },
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  bookmarkComponent: {
+    padding: 5,
+    borderRadius: 10,
+    width: 320,
+    backgroundColor: 'white',
+    margin: 5,
+    shadowColor: '#6699CC',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  roomListComponent: {
+    padding: 5,
+    borderRadius: 10,
+    width: 230,
+    backgroundColor: 'white',
+    margin: 5,
+    shadowColor: '#6699CC',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,

@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity } from 'react-native';
 import Colors from "@/constants/Colors";
+import { Ionicons } from '@expo/vector-icons';
 
 interface Booking {
   bookingId: string;
@@ -27,8 +28,14 @@ const renderItem = ({ item }: { item: Booking }) => (
     <View style={styles.textContainer}>
       <Text style={styles.name}>{item.name}</Text>
       <Text style={styles.location}>{item.location}</Text>
-      <Text style={styles.status}>{item.status}</Text>
-      <Text style={styles.dates}>{`${item.arrivalDate} - ${item.departureDate}`}</Text>
+      <View style={styles.row}>
+        <Ionicons name="checkmark-circle-outline" size={16} color={Colors.primaryColor} />
+        <Text style={styles.status}>{item.status}</Text>
+      </View>
+      <View style={styles.row}>
+        <Ionicons name="calendar-outline" size={16} color={Colors.primaryColor} />
+        <Text style={styles.dates}>{`${item.arrivalDate} - ${item.departureDate}`}</Text>
+      </View>
     </View>
   </TouchableOpacity>
 );
@@ -48,12 +55,13 @@ const MiniBookingList = () => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 10,
+    paddingVertical: 5,
     paddingHorizontal: 5,
     backgroundColor: '#F6F8FD',
   },
   item: {
     flexDirection: 'row',
+    width: 300,
     alignItems: 'center',
     marginHorizontal: 10,
     backgroundColor: '#fff',
@@ -67,9 +75,10 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
   },
   image: {
-    width: 50,
-    height: 50,
+    width: 80,
+    height: 80,
     borderRadius: 5,
+    marginLeft: 3,
   },
   textContainer: {
     flex: 1,
@@ -87,11 +96,17 @@ const styles = StyleSheet.create({
   status: {
     fontSize: 12,
     color: '#666',
-    marginTop: 4,
+    marginLeft: 5,
   },
   dates: {
     fontSize: 12,
     color: '#666',
+    marginLeft: 5,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
   },
 });
 
