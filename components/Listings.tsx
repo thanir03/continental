@@ -187,8 +187,6 @@ export default Listings;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    //width: screenWidthwidth / 2,
-    //height: 230,
     marginRight: 20,
     position: "relative",
   },

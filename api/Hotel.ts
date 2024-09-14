@@ -7,8 +7,18 @@ import {
 } from "@/types/data";
 import { AxiosError } from "axios";
 import { api } from "./config";
+import {
+  dislikeHotelLocal,
+  getAllCity,
+  getLikesLocal,
+  likeHotelLocal,
+} from "@/db/db";
 
+const isOnline = true;
 const getCityList = async (query?: string): Promise<City[]> => {
+  if (!isOnline) {
+    return await getAllCity(query);
+  }
   const params = query ? { q: query } : {};
   try {
     const response = await api.get<City[]>(`/hotel/cities/`, {
@@ -58,6 +68,18 @@ const getRoomsByHotelId = async (id: number): Promise<Room[]> => {
 const likeHotel = async (id: number): Promise<boolean> => {
   try {
     const response = await api.post(`/hotel/like/${id}/`);
+    if (response.data["action"] == "like") {
+      const liked_hotels = await api.get(`/hotel/likes/`);
+      for (let hotel of liked_hotels.data) {
+        if (hotel["id"] == id) {
+          console.log("FOund hotel", hotel["id"]);
+          likeHotelLocal(hotel);
+          break;
+        }
+      }
+    } else {
+      await dislikeHotelLocal(id);
+    }
     return response.data["action"] == "like";
   } catch (error) {
     return false;
@@ -66,6 +88,9 @@ const likeHotel = async (id: number): Promise<boolean> => {
 
 const getLikedHotels = async () => {
   try {
+    if (!isOnline) {
+      return await getLikesLocal();
+    }
     const response = await api.get(`/hotel/likes/`);
     return response.data;
   } catch (error) {

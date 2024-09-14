@@ -6,15 +6,15 @@ const NetContext = React.createContext({
   isOnline: true,
 });
 
+export let isConnected = true;
+
 const NetProvider = ({ children }: { children: React.ReactNode }) => {
   const [isOnline, setIsOnline] = useState(true);
 
   useEffect(() => {
     const unsubsribe = NetInfo.addEventListener((state) => {
-      console.log("NETWORK STATUS");
-      console.log("Connection type", state.type);
-      console.log("Connection type", state);
       setIsOnline(state.isConnected ?? false);
+      isConnected = state.isConnected ?? false;
     });
     return unsubsribe();
   }, []);

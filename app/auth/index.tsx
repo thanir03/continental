@@ -17,6 +17,7 @@ import BackButton from "@/components/UI/BackButton";
 import { useAuth } from "@/context/AuthProvider";
 
 const LoginScreen = () => {
+  console.log("login screen");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [responseErrorMsg, setResponseErrorMsg] = useState("");
@@ -25,6 +26,7 @@ const LoginScreen = () => {
   const router = useRouter();
 
   useEffect(() => {
+    console.log("running");
     if (isLoggedIn) {
       router.back();
     }

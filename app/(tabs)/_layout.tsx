@@ -88,33 +88,6 @@ const _layout = () => {
         }}
       />
       <Tabs.Screen
-        name="chatbot"
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <View
-              style={{
-                alignItems: "center",
-              }}
-            >
-              <Ionicons
-                name={focused ? "chatbubble" : "chatbubble-outline"}
-                color={focused ? Colors.primaryColor : "gray"} // Active icon is white, inactive is gray
-                size={24}
-                style={
-                  focused
-                    ? {
-                        textShadowColor: "white",
-                        textShadowOffset: { width: 0, height: 0 },
-                        textShadowRadius: 4,
-                      }
-                    : {}
-                }
-              />
-            </View>
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="bookmark"
         options={{
           tabBarIcon: ({ focused }) => (

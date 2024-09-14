@@ -138,7 +138,7 @@ const BookmarkScreen = () => {
         style={styles.headerBackground}
         imageStyle={styles.headerImage}
       >
-        <TextAnimator content="Liked" textStyle={styles.headerTitle} />
+        <TextAnimator content="Bookmark" textStyle={styles.headerTitle} />
         <Text style={styles.secondaryTitle}>Find your perfect stay</Text>
         <StatusBar hidden />
       </ImageBackground>
@@ -172,7 +172,7 @@ const BookmarkScreen = () => {
               marginBottom: 20,
             }}
           >
-            To view your liked items, please log in to your account.
+            To view your Bookmarked hotels, please log in to your account.
           </Text>
           <TouchableOpacity
             style={{
@@ -181,7 +181,7 @@ const BookmarkScreen = () => {
               borderRadius: 10,
               marginTop: 10,
             }}
-            onPress={() => router.push(`/auth?next=/liked`)}
+            onPress={() => router.push(`/auth?next=/bookmark`)}
           >
             <Text style={{ textAlign: "center", color: "white" }}>Login</Text>
           </TouchableOpacity>
@@ -219,7 +219,7 @@ const BookmarkScreen = () => {
               textAlign: "center",
             }}
           >
-            No Liked Hotels
+            No Bookmarked Hotels
           </Text>
           <TouchableOpacity
             style={{

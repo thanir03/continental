@@ -5,7 +5,6 @@ import {
   TouchableWithoutFeedback,
   Image,
   Dimensions,
-  Linking,
   TouchableOpacity,
   Alert,
 } from "react-native";
@@ -16,6 +15,7 @@ import { BookingDetails } from "@/types/data";
 import Colors from "@/constants/Colors";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import dayjs from "dayjs";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 const BookingDetailsScreen = () => {
   const { id } = useLocalSearchParams();
@@ -25,6 +25,7 @@ const BookingDetailsScreen = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | undefined>();
   const router = useRouter();
+  const { isConnected } = useNetInfo();
 
   useEffect(() => {
     setLoading(true);
@@ -347,7 +348,11 @@ const BookingDetailsScreen = () => {
                   borderRadius: 10,
                 }}
                 onPress={() => {
-                  router.push(`/booking/checkout?id=${bookingId}`);
+                  if (isConnected) {
+                    router.push(`/booking/checkout?id=${bookingId}`);
+                  } else {
+                    Alert.alert("You are not connected to internet");
+                  }
                 }}
               >
                 <View

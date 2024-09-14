@@ -18,6 +18,7 @@ import TextAnimator from "@/TypingAnimations/TextAnimator";
 import PopularCarousel from "@/components/ParallaxCarousel";
 import CitiesCarousel from "@/components/CitiesCarousel";
 import { useRouter } from "expo-router";
+import ChatButton from "@/components/Chatbot/ChatButton";
 
 const { height } = Dimensions.get("window");
 
@@ -116,7 +117,7 @@ export default function HomePage() {
           <Animated.View style={styles.headerTopBar}>
             <TouchableOpacity
               onPress={() => {
-                router.push("/booking/1");
+                router.push("/auth");
               }}
               style={{
                 position: "absolute",
@@ -186,6 +187,7 @@ export default function HomePage() {
         <CategoryButtons onCagtegoryChanged={onCatChanged} />
         <Listings category={category} />
         <CitiesCarousel />
+        <ChatButton />
         <View style={styles.bottomSpacer} />
       </Animated.ScrollView>
     </View>

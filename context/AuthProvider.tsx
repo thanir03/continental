@@ -10,6 +10,7 @@ import {
 import { ToastAndroid } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNetwork } from "./NetProvider";
+import { clearDB } from "@/db/db";
 
 GoogleSignin.configure({
   webClientId: process.env.EXPO_PUBLIC_GOOGLE_OAUTH_WEB_CLIENT,
@@ -21,6 +22,12 @@ export interface PasswordUser {
   password: string;
   name: string;
 }
+
+export const getName = (user: PasswordUser | User | null, authType: string) => {
+  if (!user) return "Guest";
+  if (authType === "oauth_google") return (user as User).user.name;
+  return (user as PasswordUser).name;
+};
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -81,13 +88,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const fn = async () => {
-      // console.log("AUTH STATE----");
-      // console.log("Is Logged In", isLoggedIn);
-      // console.log("user state", user);
-      // console.log("accessToken", await AsyncStorage.getItem("@access_token"));
-      // console.log("auth_type store", await AsyncStorage.getItem("@auth_type"));
-      // console.log("auth_type state", authType);
-      // console.log("----");
+      console.log("AUTH STATE----");
+      console.log("Is Logged In", isLoggedIn);
+      console.log("user state", user);
+      console.log("accessToken", await AsyncStorage.getItem("@access_token"));
+      console.log("auth_type store", await AsyncStorage.getItem("@auth_type"));
+      console.log("auth_type state", authType);
+      console.log("----");
     };
     fn();
   }, [isLoggedIn, user, authType]);
@@ -155,11 +162,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
     setAccessToken("");
     setAuthType("");
-    if (!isLoggedIn) {
-      return;
-    } else {
-      ToastAndroid.show(`Successfully logout`, ToastAndroid.SHORT);
-    }
+    // ToastAndroid.show(`Successfully logout`, ToastAndroid.SHORT);
+    clearDB();
   };
 
   return (

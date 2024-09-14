@@ -42,7 +42,6 @@ const HotelImageList = ({
         if (url.searchParams.get("s") && index > 0) {
           url.searchParams.set("s", "512x384");
         }
-        console.log(index, url.toString());
         return (
           <View key={index} style={styles.page}>
             <Animated.Image

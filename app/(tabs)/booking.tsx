@@ -16,7 +16,6 @@ import Listings from "@/components/Listings";
 import CitiesCarousel from "@/components/CitiesCarousel";
 import BookingList from "@/components/bookingList";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useAuth } from "@/context/AuthProvider";
 
 const { height } = Dimensions.get("window");
 

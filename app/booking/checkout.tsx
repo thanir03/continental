@@ -23,6 +23,7 @@ import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { useStripe } from "@stripe/stripe-react-native";
 import { PasswordUser, useAuth } from "@/context/AuthProvider";
 import { User } from "@react-native-google-signin/google-signin";
+import { updateBookingStatus } from "@/db/db";
 
 const CheckoutPage = () => {
   const { id } = useLocalSearchParams();
@@ -66,7 +67,6 @@ const CheckoutPage = () => {
         name: getName(),
       },
     });
-    console.log(error);
   };
 
   const openPaymentSheet = async () => {
@@ -75,7 +75,8 @@ const CheckoutPage = () => {
     if (error) {
       router.navigate(`/booking/failure?id=${bookingId}`);
     } else {
-      console.log("Sucess");
+      updateBookingStatus(Number(id), "SOON");
+      console.log("Success");
       router.dismissAll();
       router.navigate(`/booking/success?id=${bookingId}`);
     }

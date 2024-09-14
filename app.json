@@ -23,7 +23,7 @@
       "package": "com.continental.hotel",
       "config": {
         "googleMaps": {
-            "apiKey": "AIzaSyCOHQ2j4CKfjOsuUCcb4UgAYOWIKwk3vSo"
+          "apiKey": "AIzaSyCOHQ2j4CKfjOsuUCcb4UgAYOWIKwk3vSo"
         }
       }
     },
@@ -35,9 +35,15 @@
     "plugins": [
       "expo-router",
       "@react-native-google-signin/google-signin",
-      ["expo-font", {
-        "fonts": ["./assets/fonts/Montserrat.ttf"]
-      }]
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/Montserrat.ttf"
+          ]
+        }
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true
